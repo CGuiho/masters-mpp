@@ -35,8 +35,9 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   
   skewness = np.mean(((signal - mean) / std_dev)**3)
   kurtosis = np.mean(((signal - mean) / std_dev)**4) - 3
+  
   crest_factor = peak / rms
-  k_factor = rms / mean if mean != 0 else np.inf
+  k_factor = peak * rms
 
   return {
     "Mean": mean,
