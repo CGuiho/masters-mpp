@@ -4,24 +4,26 @@
 
 import numpy as np
 
-"""
-  This module is responsible for extracting data from a CSV file.
-  CSV shape: 
-    time, data
-"""
+from importer import importSignal
 
-def importSignal(file_path):
-  """
-  Import a signal from a CSV file with columns: time, data
-  Returns only the data column as a numpy array.
+
+"""
+  Interface Indicator
+    Mean
+    Standard Deviation
+    Variance
+    RMS
+    Peak
+    Skewness
+    Kurtosis
+    Crest Factor
+    Energie
+    Power
+ 
+  # Peak to Peak
+  # RMS to Peak
+  # RMS to Average
+  # RMS to Peak to Peak
   
-  Args:
-    file_path (str): Path to the CSV file.
-    
-  Returns:
-    np.ndarray: The signal data as a numpy array.
-  """
-
-  data = np.genfromtxt(file_path, delimiter=',', usecols=1)
-  return data
+"""
 
