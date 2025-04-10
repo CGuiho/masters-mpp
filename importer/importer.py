@@ -10,6 +10,10 @@ import numpy as np
     time, data
 """
 
+"""
+  Interface Signal: np.ndarray
+"""
+
 def importSignal(file_path):
   """
   Import a signal from a CSV file with columns: time, data
