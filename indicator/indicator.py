@@ -9,17 +9,17 @@ from importer import importSignal
 
 """
   Interface Indicator
-    Mean
-    Standard Deviation
-    Variance
-    RMS
-    Peak
-    Energie
-    Power
-    Skewness
-    Kurtosis
-    Crest Factor
-    K Factor
+    mean: number  -  Mean
+    std_dev: number  -  Standard Deviation
+    variance: number  -  Variance
+    rms: number  -  RMS
+    peak: number  -  Peak
+    energy: number  -  Energie
+    power: number  -  Power
+    skewness: number  -  Skewness
+    kurtosis: number  -  Kurtosis
+    crest_factor: number  -  Crest Factor
+    k_factor: number  -  K Factor
 """
 
 def calculateIndicators(signal: np.ndarray) -> dict:
@@ -40,15 +40,15 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   k_factor = peak * rms
 
   return {
-    "Mean": mean,
-    "Standard Deviation": std_dev,
-    "Variance": variance,
-    "RMS": rms,
-    "Peak": peak,
-    "Energy": energy,
-    "Power": power,
-    "Skewness": skewness,
-    "Kurtosis": kurtosis,
-    "Crest Factor": crest_factor,
-    "K Factor": k_factor
+    mean: mean,
+    std_dev: std_dev,
+    variance: variance,
+    rms: rms,
+    peak: peak,
+    energy: energy,
+    power: power,
+    skewness: skewness,
+    kurtosis: kurtosis,
+    crest_factor: crest_factor,
+    k_factor: k_factor,
   }
