@@ -5,6 +5,7 @@
 import type { Signal } from '../signal/signal'
 
 export { calculateFeatureSet, energy, kurtosis, mean, peak, power, rms, skewness, stdDev, variance }
+export type { FeatureSet }
 
 type FeatureSet = {
   mean: number
@@ -20,7 +21,7 @@ type FeatureSet = {
   kFactor: number
 }
 
-async function calculateFeatureSet(signal: Signal): Promise<FeatureSet> {
+function calculateFeatureSet(signal: Signal): FeatureSet {
   const meanValue = mean(signal)
   const stdDevValue = stdDev(signal)
   const varianceValue = variance(signal)

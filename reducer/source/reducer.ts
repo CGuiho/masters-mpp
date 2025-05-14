@@ -3,6 +3,7 @@
  */
 
 import * as fs from 'fs'
+import { calculateFeatureSet, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
 import { navigateFromRoot } from './navigate-from-root'
 import type { Signal } from './signal/signal'
@@ -36,11 +37,16 @@ const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
 
 console.timeEnd('data-sources')
 
-type FeatureSet = 
-
-type DataFeatures = {
+type DataWithFeatures = {
   id: string
   features: FeatureSet[]
 }
 
-const featuresData = 
+console.time('features-calculation')
+const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
+  const features = signals.map(signal => calculateFeatureSet(signal))
+  return { id, features } satisfies DataWithFeatures
+})
+console.timeEnd('features-calculation')
+
+
