@@ -96,12 +96,30 @@ def calculateIndicatorsVector(signal: np.ndarray) -> dict:
     # indicator_dict["skewness"],
   ]
 
+def calculateIndicatorsMatrix(signalMatrix: list) -> list:
+  """
+    Interface Indicator
+      mean: number  -  Mean
+      std_dev: number  -  Standard Deviation
+      variance: number  -  Variance
+      rms: number  -  RMS
+      peak: number  -  Peak
+      energy: number  -  Energie
+      power: number  -  Power
+      skewness: number  -  Skewness
+      kurtosis: number  -  Kurtosis
+      crest_factor: number  -  Crest Factor
+      k_factor: number  -  K Factor
+  """
+  
+  return [calculateIndicatorsVector(signal) for signal in signalMatrix]
+
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
 signalMatrix4 = importSignalList("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
 
-
+indicatorMatrix1 = [calculateIndicatorsVector(signal) for signal in signalMatrix1]
 
 print("signalMatrix1", len(signalMatrix1))
 print("signalMatrix2", len(signalMatrix2))
