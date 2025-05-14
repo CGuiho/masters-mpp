@@ -1,0 +1,32 @@
+{
+  "40": {
+    "name": "GUIHO Destro Reducer",
+    "version": {
+      "name": "Cristóvão GUIHO"
+    }
+  },
+  "name": "reducer",
+  "version": "0.0.0",
+  "private": true,
+  "keywords": [],
+  "license": "PROPRIETARY",
+  "description": "",
+  "type": "module",
+  "homepage": "https://nante40.guiho.co",
+  "author": {
+    "name": "Cristóvão GUIHO",
+    "email": "cg@guiho.co",
+    "url": "https://guiho.co/cg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cguiho/nante40.git",
+    "directory": "nante40"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
