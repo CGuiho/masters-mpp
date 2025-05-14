@@ -119,12 +119,20 @@ signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sa
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
 signalMatrix4 = importSignalList("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
 
-indicatorMatrix1 = [calculateIndicatorsVector(signal) for signal in signalMatrix1]
-
 print("signalMatrix1", len(signalMatrix1))
 print("signalMatrix2", len(signalMatrix2))
 print("signalMatrix3", len(signalMatrix3))
 print("signalMatrix4", len(signalMatrix4))
+
+indicatorMatrix1 = [calculateIndicatorsVector(signal) for signal in signalMatrix1]
+indicatorMatrix2 = [calculateIndicatorsVector(signal) for signal in signalMatrix2]
+indicatorMatrix3 = [calculateIndicatorsVector(signal) for signal in signalMatrix3]
+indicatorMatrix4 = [calculateIndicatorsVector(signal) for signal in signalMatrix4]
+
+print("indicatorMatrix1 dimensions", len(indicatorMatrix1), len(indicatorMatrix1[0]))
+print("indicatorMatrix2 dimensions", len(indicatorMatrix2), len(indicatorMatrix2[0]))
+print("indicatorMatrix3 dimensions", len(indicatorMatrix3), len(indicatorMatrix3[0]))
+print("indicatorMatrix4 dimensions", len(indicatorMatrix4), len(indicatorMatrix4[0]))
 
 # print("s1(t)", s1)
 # print("s2(t)", s2)
