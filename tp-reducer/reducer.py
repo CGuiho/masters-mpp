@@ -368,3 +368,5 @@ print("relevantIndicatorMatrix[0] dimensions", len(relevantIndicatorMatrix[0]), 
 print("relevantIndicatorMatrix[1] dimensions", len(relevantIndicatorMatrix[1]), len(relevantIndicatorMatrix[1][0]))
 print("relevantIndicatorMatrix[2] dimensions", len(relevantIndicatorMatrix[2]), len(relevantIndicatorMatrix[2][0]))
 print("relevantIndicatorMatrix[3] dimensions", len(relevantIndicatorMatrix[3]), len(relevantIndicatorMatrix[3][0]))
+
+
