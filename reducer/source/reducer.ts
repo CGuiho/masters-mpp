@@ -36,6 +36,11 @@ const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
 
 console.timeEnd('data-sources')
 
-console.log('Data sources loaded:', dataSources.length)
-console.log('Data sources loaded:', dataSources[0]?.id)
-console.log('Data sources loaded:', dataSources[0]?.signals.length)
+type FeatureSet = 
+
+type DataFeatures = {
+  id: string
+  features: FeatureSet[]
+}
+
+const featuresData = 
