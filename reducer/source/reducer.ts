@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import { calculateFeatureSet, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
 import { navigateFromRoot } from './navigate-from-root'
-import { calculateFeatureRelevanceByVariance } from './sbs/feature-relevance-through-variance'
+import { calculateFeatureRelevanceByVariance, calculateFeatureRelevanceByVarianceOrdered } from './sbs/feature-relevance-through-variance'
 import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
@@ -66,7 +66,7 @@ console.log('Relevant Features 0:', relevantFeatures2)
 console.timeEnd('features-variance-0')
 
 console.time('features-variance-1')
-const relevantFeatures1 = calculateFeatureRelevanceByVariance(featuresList)
+const relevantFeatures1 = calculateFeatureRelevanceByVarianceOrdered(featuresList)
 console.log('Relevant Features 1:', relevantFeatures1)
 console.timeEnd('features-variance-1')
 
