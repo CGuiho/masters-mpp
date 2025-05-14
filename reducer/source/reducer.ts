@@ -17,6 +17,8 @@ type DataSource = {
   signals: Signal[]
 }
 
+console.time('application')
+
 console.time('data-sources')
 
 const dataDirectory = navigateFromRoot('./data')
@@ -105,5 +107,28 @@ const relevantData = featuresData.map(({ id, features }) => {
   return { id, features: relevantFeaturesData } satisfies RelevantData
 })
 
-console.log('Relevant Data:', relevantData[0]?.features.length)
+console.log('Relevant Data length:', relevantData[0]?.features.length)
 console.log('Relevant Data:', relevantData[0]?.features[0])
+
+const SPLIT_RATIO = 0.8
+const TOTAL_DATA_SIZE = relevantData[0]?.features.length!
+const TRAINING_DATA_SIZE = Math.floor(TOTAL_DATA_SIZE * SPLIT_RATIO)
+const TESTING_DATA_SIZE = TOTAL_DATA_SIZE - TRAINING_DATA_SIZE
+
+const trainingData = relevantData.map(({ id, features }) => {
+  const trainingFeatures = features.slice(0, TRAINING_DATA_SIZE)
+  return { id, features: trainingFeatures } satisfies RelevantData
+})
+
+const testingData = relevantData.map(({ id, features }) => {
+  const testingFeatures = features.slice(TRAINING_DATA_SIZE, TRAINING_DATA_SIZE + TESTING_DATA_SIZE)
+  return { id, features: testingFeatures } satisfies RelevantData
+})
+
+console.log('Training Data length:', trainingData[0]?.features.length)
+console.log('Training Data:', trainingData[0]?.features[0])
+
+console.log('Testing Data length:', testingData[0]?.features.length)
+console.log('Testing Data:', testingData[0]?.features[0])
+
+console.timeEnd('application')
