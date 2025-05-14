@@ -66,11 +66,31 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   }
 
 
-signal = importSignal("./tp-equilibrator/data/1-roulement-sain/acc_00001.csv")
-print(signal)
+s1 = importSignal("./tp-reducer/data/1-roulement-sain-pignon-sain/acc_00001.csv")
+s2 = importSignal("./tp-reducer/data/2-roulement-defaut-pignon-sain/acc_00001.csv")
+s3 = importSignal("./tp-reducer/data/3-roulement-sain-pignon-defaut/acc_00001.csv")
+s4 = importSignal("./tp-reducer/data/4-roulement-defaut-pignon-defaut/acc_00001.csv")
 
-indicator = calculateIndicators(signal)
+print("s1(t)", s1)
+print("s2(t)", s2)
+print("s3(t)", s3)
+print("s4(t)", s4)
 
-print(f"Mean: {indicator['mean']}")
-print(f"Kurtosis: {indicator['kurtosis']}")
+indicator1 = calculateIndicators(s1)
+indicator2 = calculateIndicators(s2)
+indicator3 = calculateIndicators(s3)
+indicator4 = calculateIndicators(s4)
+
+
+print(f"Mean: {indicator1['mean']}")
+print(f"Kurtosis: {indicator1['kurtosis']}")
+
+print(f"Mean: {indicator2['mean']}")
+print(f"Kurtosis: {indicator2['kurtosis']}")
+
+print(f"Mean: {indicator3['mean']}")
+print(f"Kurtosis: {indicator3['kurtosis']}")
+
+print(f"Mean: {indicator4['mean']}")
+print(f"Kurtosis: {indicator4['kurtosis']}")
 
