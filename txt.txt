@@ -19,7 +19,7 @@ MATRICE_DONNEE {4} = importdata('tp2_Reducteur_TECHNIVB_Roulement_sain_Pignon_sa
 
 SERIE_INDICATEUR = 1: INDICATEURS_INITIAL;
 
-for K = INDICATEURS_INITIAL :-1: INDICATEURS_FINAL+1 
+for K = INDICATEURS_INITIAL :-1: INDICATEURS_FINAL+1
     for L = 1 : length (SERIE_INDICATEUR)
         %% Début de séquence de suppression des indicateurs les moins pertinents
         INDICATEUR_SELECT = SERIE_INDICATEUR;

@@ -78,7 +78,7 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   }
 
 
-def calculateIndicatorsVector(signal: np.ndarray) -> dict:  
+def calculateIndicatorsVector(signal: np.ndarray) -> list:  
   indicator_dict = calculateIndicators(signal)
 
   return [
@@ -114,9 +114,183 @@ def calculateIndicatorsMatrix(signalMatrix: list) -> list:
   
   return [calculateIndicatorsVector(signal) for signal in signalMatrix]
 
-def selectRelevantIndicators(all_indicator_matrices: list, desiredRelevantIndicatorLength: int) -> list:
-  initial
-  return
+# def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantIndicatorLength: int) -> list:
+#   initialIndicatorsLength = len(matricesOfIndicatorMatrix[0])
+#   dataLength = len(matricesOfIndicatorMatrix[0][0])
+
+#   finalIndicatorsLength = desiredRelevantIndicatorLength
+
+#   for k in range(initialRowLength):
+
+#   return   
+
+def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantIndicatorLength: int) -> list:
+    """
+    Selects relevant indicators from a list of indicator matrices using Sequential Backward Selection (SBS).
+    The criterion for removal is low variance: indicators that change the least across all samples
+    in all provided matrices are removed first.
+
+    Args:
+        matricesOfIndicatorMatrix (list): 
+            A list of matrices. Each matrix is expected to be a list of samples (rows), 
+            where each sample is a list of numerical indicator values (columns).
+            Example: [[[feat1, feat2], [feat1, feat2]], [[feat1, feat2]]]
+                     (A list containing two matrices, one with 2 samples, one with 1 sample, both 2 features)
+            It's assumed that all inner matrices initially have the same number of indicators (features).
+        
+        desiredRelevantIndicatorLength (int): 
+            The target number of indicators to keep. Must be non-negative.
+
+    Returns:
+        list: 
+            A list of matrices, structured like the input, but each inner matrix will 
+            contain only the 'desiredRelevantIndicatorLength' most relevant indicators (columns).
+            Returns empty lists or matrices with zero columns if appropriate (e.g., desired length is 0).
+
+    Raises:
+        TypeError: If inputs are not of the expected types.
+        ValueError: If input matrices are inconsistent, desired length is negative,
+                    or data cannot be processed.
+    """
+
+    # --- 1. Input Validation and Initialization ---
+    if not isinstance(matricesOfIndicatorMatrix, list):
+        raise TypeError("Input 'matricesOfIndicatorMatrix' must be a list.")
+    if not isinstance(desiredRelevantIndicatorLength, int):
+        raise TypeError("Input 'desiredRelevantIndicatorLength' must be an integer.")
+    if desiredRelevantIndicatorLength < 0:
+        raise ValueError("desiredRelevantIndicatorLength cannot be negative.")
+
+    if not matricesOfIndicatorMatrix: # Handle empty list of matrices
+        return []
+
+    np_matrices = []
+    initial_num_indicators = -1
+
+    for i, mat_data in enumerate(matricesOfIndicatorMatrix):
+        if not isinstance(mat_data, (list, np.ndarray)):
+            raise TypeError(f"Matrix at index {i} is not a list or NumPy array.")
+        
+        try:
+            # Attempt to convert to float, as variance calculation requires numeric data
+            current_mat_np = np.array(mat_data, dtype=float)
+        except ValueError as e:
+            raise ValueError(
+                f"Could not convert matrix at index {i} to a numeric NumPy array. "
+                f"Ensure all elements are numbers. Original error: {e}"
+            )
+
+        # Standardize shapes:
+        # If mat_data was [], np.array([]) gives shape (0,), which is 1D.
+        # We want it as (0, num_features) or (0,0) if num_features is unknown yet.
+        if current_mat_np.ndim == 1 and current_mat_np.size == 0: # Empty list became np.array([])
+            # We'll define its column count based on initial_num_indicators later if possible
+            current_mat_np = np.empty((0, 0), dtype=float) # Placeholder, might get updated
+        elif current_mat_np.ndim == 1 and current_mat_np.size > 0:
+            # This could be a single sample list like [1, 2, 3]
+            # Reshape to (1, num_features)
+            current_mat_np = current_mat_np.reshape(1, -1)
+        elif current_mat_np.ndim != 2 and current_mat_np.size > 0 : # Not 0, 1 or 2D, or 2D but not samples x features
+            raise ValueError(f"Matrix at index {i} (shape: {current_mat_np.shape}) is not structured as samples by features.")
+
+        np_matrices.append(current_mat_np)
+
+        # Determine initial_num_indicators from the first matrix with columns, or any matrix
+        if initial_num_indicators == -1:
+            if current_mat_np.ndim == 2: # Includes (0,N) and (N,M)
+                 initial_num_indicators = current_mat_np.shape[1]
+            # If it's still -1 after this loop, it means all inputs were like [] or [[]] resulting in (0,0)
+        elif current_mat_np.ndim == 2 and current_mat_np.shape[1] != initial_num_indicators:
+            # Allow matrices with 0 samples to have a different number of columns if initial_num_indicators is already 0
+            if not (current_mat_np.shape[0] == 0 and initial_num_indicators == 0 and current_mat_np.shape[1] > 0):
+                 # Allow (0, K) if initial_num_indicators is K
+                if not (current_mat_np.shape[0] == 0 and current_mat_np.shape[1] == initial_num_indicators):
+                    raise ValueError(
+                        f"All matrices must have the same number of initial indicators. "
+                        f"Matrix {i} has {current_mat_np.shape[1]} indicators, "
+                        f"but expected {initial_num_indicators} based on earlier matrices."
+                    )
+    
+    if initial_num_indicators == -1: # All inputs were empty in a way that shape[1] couldn't be determined (e.g. list of [])
+        initial_num_indicators = 0
+
+    # Refine shapes of empty matrices now that initial_num_indicators is known
+    for i in range(len(np_matrices)):
+        if np_matrices[i].shape == (0,0) and initial_num_indicators > 0 :
+            np_matrices[i] = np.empty((0, initial_num_indicators), dtype=float)
+        elif np_matrices[i].ndim == 2 and np_matrices[i].shape[1] == 0 and initial_num_indicators > 0 and np_matrices[i].shape[0] > 0:
+            # This case means a matrix had (N,0) but others had (M, K) where K > 0. This is an inconsistency.
+            raise ValueError(f"Matrix at index {i} has 0 indicators, but expected {initial_num_indicators}.")
+
+
+    if desiredRelevantIndicatorLength > initial_num_indicators:
+        print(f"Warning: desiredRelevantIndicatorLength ({desiredRelevantIndicatorLength}) "
+              f"is greater than the available {initial_num_indicators} indicators. "
+              f"Selecting all {initial_num_indicators} indicators.")
+        desiredRelevantIndicatorLength = initial_num_indicators
+
+    # --- 2. SBS Core Logic ---
+    current_indicator_indices = list(range(initial_num_indicators))
+    num_indicators_to_remove = initial_num_indicators - desiredRelevantIndicatorLength
+
+    for _ in range(num_indicators_to_remove):
+        if len(current_indicator_indices) <= desiredRelevantIndicatorLength:
+            break # Already reached or below target
+        if not current_indicator_indices:
+            break # No indicators left to remove
+
+        indicator_variances = []
+        for original_col_idx in current_indicator_indices:
+            # Collect all data for this specific indicator column from all matrices
+            # Ensure matrix has samples and the column index is valid for that matrix
+            all_data_for_this_column = np.concatenate([
+                matrix[:, original_col_idx]
+                for matrix in np_matrices
+                if matrix.ndim == 2 and matrix.shape[0] > 0 and matrix.shape[1] > original_col_idx
+            ])
+
+            if all_data_for_this_column.size == 0:
+                # This can happen if all matrices are empty or don't have this column
+                # (latter shouldn't occur if initial checks are perfect).
+                # An indicator with no data "doesn't change"; assign 0 variance.
+                variance = 0.0
+            else:
+                variance = np.var(all_data_for_this_column)
+            indicator_variances.append({'original_index': original_col_idx, 'variance': variance})
+        
+        if not indicator_variances: # No data found for any remaining indicators
+            break
+
+        # Sort by variance (ascending). Indicators with lower variance are "less relevant" by this criterion.
+        indicator_variances.sort(key=lambda x: x['variance'])
+        
+        # Identify the indicator to remove (the one with the smallest variance)
+        indicator_to_remove_original_idx = indicator_variances[0]['original_index']
+        current_indicator_indices.remove(indicator_to_remove_original_idx)
+
+    # --- 3. Prepare Output ---
+    final_selected_original_indices = sorted(current_indicator_indices) # Keep original order if possible
+    output_matrices = []
+
+    for matrix_np in np_matrices:
+        if matrix_np.ndim != 2 : # Should have been standardized to 2D
+             output_matrices.append([]) # Should not happen if validation is complete
+             continue
+
+        # Handle matrices that were initially empty or had no columns
+        if matrix_np.shape[1] == 0: # Input matrix had 0 columns e.g. (N,0) or (0,0)
+            # The number of rows should be preserved, columns will be len(final_selected_original_indices)
+            # If final_selected_original_indices is also empty (e.g. desired=0), then (N,0)
+            num_rows = matrix_np.shape[0]
+            selected_cols_for_this_matrix = np.empty((num_rows, len(final_selected_original_indices)), dtype=float)
+        else:
+            # Select the determined relevant columns for this matrix
+            selected_cols_for_this_matrix = matrix_np[:, final_selected_original_indices]
+        
+        output_matrices.append(selected_cols_for_this_matrix.tolist())
+        
+    return output_matrices
+
 
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
@@ -138,13 +312,17 @@ print("indicatorMatrix2 dimensions", len(indicatorMatrix2), len(indicatorMatrix2
 print("indicatorMatrix3 dimensions", len(indicatorMatrix3), len(indicatorMatrix3[0]))
 print("indicatorMatrix4 dimensions", len(indicatorMatrix4), len(indicatorMatrix4[0]))
 
-reducedIndicatorMatrix1 = selectRelevantIndicators(indicatorMatrix1, 3)
-reducedIndicatorMatrix2 = selectRelevantIndicators(indicatorMatrix2, 3)
-reducedIndicatorMatrix3 = selectRelevantIndicators(indicatorMatrix3, 3)
-reducedIndicatorMatrix4 = selectRelevantIndicators(indicatorMatrix4, 3)
+matrixOfIndicatorMatrices = [
+  indicatorMatrix1,
+  indicatorMatrix2,
+  indicatorMatrix3,
+  indicatorMatrix4
+]
 
-print("reducedIndicatorMatrix1 dimensions", len(reducedIndicatorMatrix1), len(reducedIndicatorMatrix1[0]))
-print("reducedIndicatorMatrix2 dimensions", len(reducedIndicatorMatrix2), len(reducedIndicatorMatrix2[0]))
-print("reducedIndicatorMatrix3 dimensions", len(reducedIndicatorMatrix3), len(reducedIndicatorMatrix3[0]))
-print("reducedIndicatorMatrix4 dimensions", len(reducedIndicatorMatrix4), len(reducedIndicatorMatrix4[0]))
+relevantIndicatorMatrix = selectRelevantIndicators(matrixOfIndicatorMatrices, 3)
 
+print("relevantIndicatorMatrix dimensions", len(relevantIndicatorMatrix), len(relevantIndicatorMatrix[0]))
+print("relevantIndicatorMatrix[0] dimensions", len(relevantIndicatorMatrix[0]), len(relevantIndicatorMatrix[0][0]))
+print("relevantIndicatorMatrix[1] dimensions", len(relevantIndicatorMatrix[1]), len(relevantIndicatorMatrix[1][0]))
+print("relevantIndicatorMatrix[2] dimensions", len(relevantIndicatorMatrix[2]), len(relevantIndicatorMatrix[2][0]))
+print("relevantIndicatorMatrix[3] dimensions", len(relevantIndicatorMatrix[3]), len(relevantIndicatorMatrix[3][0]))
