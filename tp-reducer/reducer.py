@@ -91,7 +91,10 @@ signalMatrix2 = importSignal("./tp-reducer/data/2-roulement-defaut-pignon-sain/"
 signalMatrix3 = importSignal("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
 signalMatrix4 = importSignal("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
 
-print("s1(t)", len(s1))
+print("signalMatrix1", len(signalMatrix1))
+print("signalMatrix2", len(signalMatrix2))
+print("signalMatrix3", len(signalMatrix3))
+print("signalMatrix4", len(signalMatrix4))
 
 # print("s1(t)", s1)
 # print("s2(t)", s2)
