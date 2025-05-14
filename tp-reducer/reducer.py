@@ -391,10 +391,10 @@ def neuralNetwork2LayersProduction(weights: list, inputs: list, numberOfOutputs)
   """
   pass
 
-def repeat_list_elements(input: list, repetitions: int) -> list:
+def repeat_list_elements(element: list, repetitions: int) -> list:
   output_list = []
-  for item in range(repetitions):
-    output_list.append(item)
+  for _item in range(repetitions):
+    output_list.append(element)
   return output_list
 
 
@@ -471,7 +471,9 @@ print("trainingData dimensions", len(trainingData), len(trainingData[0]))
 print()
 print("desiredOutputsMatrix dimensions", len(desiredOutputsMatrix), len(desiredOutputsMatrix[0]))
 print("desiredOutputs dimensions", len(desiredOutputs), len(desiredOutputs[0]))
+print("desiredOutputs dimensions", desiredOutputs[0])
 
 print()
 print("testingDataMatrix dimensions", len(testingDataMatrix), len(testingDataMatrix[0]))
 print("testingData dimensions", len(testingData), len(testingData[0]))
+
