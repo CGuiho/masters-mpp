@@ -4,7 +4,7 @@
 
 import { mean, stdDev, type Feature, type FeatureSet } from '../feature/feature'
 
-export { exampleCriterionMultiClass, getFeatureRelevanceScores, sbs }
+export { defaultCriterionMultiClass, getFeatureRelevanceScores, sbs }
 
 /**
  * Sequential Backward Selection (SBS)
@@ -16,7 +16,7 @@ export { exampleCriterionMultiClass, getFeatureRelevanceScores, sbs }
  * @param classes An array of classes, where each class is an array of FeatureSet objects.
  * Example: `[[healthySample1, healthySample2], [faultySample1, faultySample2]]`
  * @param criterionFunc Optional: A custom criterion function for multi-class data.
- * If not provided, `exampleCriterionMultiClass` is used.
+ * If not provided, `defaultCriterionMultiClass` is used.
  * Signature: (subset: Feature[], allClassData: FeatureSet[][]) => number
  * @returns A list of features sorted by relevance (most relevant first).
  */
@@ -43,7 +43,7 @@ function sbs(
     return [...allPossibleFeatures] // Or handle as an error/empty list
   }
 
-  const effectiveCriterion = criterionFunc || exampleCriterionMultiClass
+  const effectiveCriterion = criterionFunc || defaultCriterionMultiClass
 
   let currentFeaturesWorkingSet = [...allPossibleFeatures]
   // Stores features in the order they are removed (from least important to more important)
@@ -129,7 +129,7 @@ function getFeatureRelevanceScores(rankedFeatures: Feature[]): Partial<Record<Fe
  * @param allClassData An array of classes, where each class is an array of FeatureSet.
  * @returns A score indicating the quality of the feature subset for multi-class separation.
  */
-function exampleCriterionMultiClass(subset: Feature[], allClassData: FeatureSet[][]): number {
+function defaultCriterionMultiClass(subset: Feature[], allClassData: FeatureSet[][]): number {
   if (subset.length === 0) return 0
   if (!allClassData || allClassData.length < 2) {
     // Need at least two classes to compare for separability
