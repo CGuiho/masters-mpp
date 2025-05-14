@@ -21,23 +21,28 @@ type FeatureSet = {
 }
 
 async function calculateFeatureSet(signal: Signal): Promise<FeatureSet> {
-  // Placeholder for actual feature calculation logic
-  const partialFeatures = {
-    mean: mean(signal),
-    stdDev: stdDev(signal),
-    variance: variance(signal),
-    rms: rms(signal),
-    peak: peak(signal),
-    energy: energy(signal),
-    power: power(signal),
-    skewness: skewness(signal),
-    kurtosis: kurtosis(signal),
-  }
+  const meanValue = mean(signal)
+  const stdDevValue = stdDev(signal)
+  const varianceValue = variance(signal)
+  const rmsValue = rms(signal)
+  const peakValue = peak(signal)
+  const energyValue = energy(signal)
+  const powerValue = power(signal)
+  const skewnessValue = skewness(signal)
+  const kurtosisValue = kurtosis(signal)
 
   return {
-    ...partialFeatures,
-    crestFactor: partialFeatures.peak / partialFeatures.rms,
-    kFactor: partialFeatures.peak * partialFeatures.rms,
+    mean: meanValue,
+    stdDev: stdDevValue,
+    variance: varianceValue,
+    rms: rmsValue,
+    peak: peakValue,
+    energy: energyValue,
+    power: powerValue,
+    skewness: skewnessValue,
+    kurtosis: kurtosisValue,
+    crestFactor: peakValue / rmsValue,
+    kFactor: peakValue * rmsValue,
   }
 }
 
@@ -61,14 +66,13 @@ function mean(signal: number[]): number {
  * @param signal An array of numbers.
  * @returns The variance of the signal, or NaN if the signal is empty.
  */
-function variance(signal: number[]): number {
+function variance(signal: number[], meanValue?: number): number {
   const n = signal.length
   if (n === 0) {
     return NaN
   }
-  const signalMean = mean(signal)
+  const signalMean = meanValue || mean(signal)
   if (isNaN(signalMean)) {
-    // Should only happen if signal was empty, already handled
     return NaN
   }
   const squaredDifferences = signal.map(val => (val - signalMean) ** 2)
@@ -82,8 +86,8 @@ function variance(signal: number[]): number {
  * @param signal An array of numbers.
  * @returns The standard deviation of the signal, or NaN if the signal is empty.
  */
-function stdDev(signal: number[]): number {
-  const signalVariance = variance(signal)
+function stdDev(signal: number[], varianceValue?: number): number {
+  const signalVariance = varianceValue || variance(signal)
   if (isNaN(signalVariance)) {
     return NaN
   }
