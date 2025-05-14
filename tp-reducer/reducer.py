@@ -52,17 +52,17 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   k_factor = peak * rms
 
   return {
-    mean: mean,
-    std_dev: std_dev,
-    variance: variance,
-    rms: rms,
-    peak: peak,
-    energy: energy,
-    power: power,
-    skewness: skewness,
-    kurtosis: kurtosis,
-    crest_factor: crest_factor,
-    k_factor: k_factor,
+    "mean": mean,
+    "std_dev": std_dev,
+    "variance": variance,
+    "rms": rms,
+    "peak": peak,
+    "energy": energy,
+    "power": power,
+    "skewness": skewness,
+    "kurtosis": kurtosis,
+    "crest_factor": crest_factor,
+    "k_factor": k_factor,
   }
 
 
@@ -70,5 +70,7 @@ signal = importSignal("./tp-equilibrator/data/1-roulement-sain/acc_00001.csv")
 print(signal)
 
 indicator = calculateIndicators(signal)
-print()
+
+print(f"Mean: {indicator['mean']}")
+print(f"Kurtosis: {indicator['kurtosis']}")
 
