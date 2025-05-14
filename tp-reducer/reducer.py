@@ -114,14 +114,56 @@ def calculateIndicatorsMatrix(signalMatrix: list) -> list:
   
   return [calculateIndicatorsVector(signal) for signal in signalMatrix]
 
-# def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantIndicatorLength: int) -> list:
-#   initialIndicatorsLength = len(matricesOfIndicatorMatrix[0])
-#   dataLength = len(matricesOfIndicatorMatrix[0][0])
+# def selectRelevantIndicatorsUsingSBS(matricesOfIndicatorMatrix: list, desiredRelevantIndicatorLength: int) -> list:
+#   # initialIndicatorsLength = len(matricesOfIndicatorMatrix[0])
+#   # dataLength = len(matricesOfIndicatorMatrix[0][0])
 
-#   finalIndicatorsLength = desiredRelevantIndicatorLength
+#   # finalIndicatorsLength = desiredRelevantIndicatorLength
 
-#   for k in range(initialRowLength):
-
+#   # for k in range(initialRowLength):
+#   #MatlabCode
+# # % % définition des variable d’entrée
+# # n = 70;
+# # M = 3;
+# # INDICATEURS_INITIAL= 8;
+# # INDICATEURS_FINAL= 3;
+# # %% Début du programme
+# # SERIE_INDICATEUR = 1: INDICATEURS_INITIAL;
+# # for K = INDICATEURS_INITIAL :-1: INDICATEURS_FINAL+1 
+# #     for L = 1 : length (SERIE_INDICATEUR)
+# #         %% Début de séquence de suppression des indicateurs les moins pertinents
+# #         INDICATEUR_SELECT = SERIE_INDICATEUR;
+# #         INDICATEUR_SELECT (L) = [];
+# #         %% Calcul du critère de qualité J pour l’indicateur supprimé
+# #         %% Calcul de la dispersion intra classe
+# #         DISP_INTRA= 0;
+# #         X={};
+# #         for i = 1 : M
+# #             X{i} = MATRICE_DONNEE{i}(:,INDICATEUR_SELECT);
+# #             gi = mean (X{i});
+# #             for j = 1 : n
+# #                 Xij = X{i} (j,:);
+# #                 DISP_INTRA = DISP_INTRA+(Xij-gi)*(Xij-gi)' ;
+# #             end
+# #         end
+# #         %% Calcul de la dispersion inter classe
+# #         g = 0;
+# #         DISP_INTER =0;
+# #         for i =1:M
+# #             gi= mean (X{i});
+# #             g = g + (1/M) * gi;
+# #         end
+# #         for i =1:M
+# #             gi= mean (X{i});
+# #             DISP_INTER = DISP_INTER + (gi - g)*(gi - g)';
+# #         end
+# #         %% Calcul du critère J
+# #         J (L) = (DISP_INTER/DISP_INTRA);
+# #     end
+# #     %% Localisation de la positon (POS) de l’indicateur le moins pertinent
+# #     POS= find(J==max(J));
+# #     SERIE_INDICATEUR (POS(1)) = [];
+# # end
 #   return   
 
 def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantIndicatorLength: int) -> list:
@@ -313,10 +355,10 @@ print("indicatorMatrix3 dimensions", len(indicatorMatrix3), len(indicatorMatrix3
 print("indicatorMatrix4 dimensions", len(indicatorMatrix4), len(indicatorMatrix4[0]))
 
 matrixOfIndicatorMatrices = [
-  indicatorMatrix1,
-  indicatorMatrix2,
-  indicatorMatrix3,
-  indicatorMatrix4
+  indicatorMatrix1, # 1-roulement-sain-pignon-sain
+  indicatorMatrix2, # 2-roulement-defaut-pignon-sain
+  indicatorMatrix3, # 3-roulement-sain-pignon-defaut
+  indicatorMatrix4, # 4-roulement-defaut-pignon-defaut
 ]
 
 relevantIndicatorMatrix = selectRelevantIndicators(matrixOfIndicatorMatrices, 3)
