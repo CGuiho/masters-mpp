@@ -32,7 +32,6 @@ def importSignalList(dir_path):
     signals.append(data)
   return signals
 
-
 def calculateIndicators(signal: np.ndarray) -> dict:  
   """
     Interface Indicator
@@ -85,6 +84,8 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   # is removed or commented out to prevent 's1' from being overwritten.
   # Also, subsequent operations like calculateIndicators(s1) will need to be
   # adapted if they expect a single signal array rather than a list of arrays.
+
+
 
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
