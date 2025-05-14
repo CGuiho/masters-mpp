@@ -328,6 +328,68 @@ def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantInd
         
     return output_matrices
 
+def neuralNetwork2LayersTraining(inputList: list, desiredOutputs: list) -> list:
+  """
+  Neural network 2 layers.
+  No hidden layers.
+
+  Args:
+    inputList (list): List of input vectors.
+    desiredOutputs (list): List of desired output vectors.
+  Returns:
+    list: List of weights for the neural network.
+    list: List of biases for the neural network.
+  """
+
+  observationLength = len(inputList[0])
+  outputLength = len(desiredOutputs[0])
+
+  # Initialize weights
+  weightsL1 = np.random.rand(observationLength, observationLength)
+  biasesL1 = np.random.rand(observationLength)
+
+  weightsL2 = np.random.rand(observationLength, outputLength)
+  biasesL2 = np.random.rand(outputLength)
+
+  learningRate = 0.01
+  # Training loop
+  for epoch in range(1000):
+    for i in range(len(inputList)):
+      # Forward pass
+      inputVector = inputList[i]
+      desiredOutput = desiredOutputs[i]
+
+      # Layer 1
+      layer1Output = np.dot(inputVector, weightsL1) + biasesL1
+      layer1Output = np.tanh(layer1Output)
+
+      # Layer 2
+      layer2Output = np.dot(layer1Output, weightsL2) + biasesL2
+      layer2Output = np.tanh(layer2Output)
+
+      # Backward pass
+      error = desiredOutput - layer2Output
+
+      # Calculate gradients
+      dLayer2 = error * (1 - layer2Output ** 2)
+      dLayer1 = np.dot(dLayer2, weightsL2.T) * (1 - layer1Output ** 2)
+
+      # Update weights and biases
+      weightsL2 += learningRate * np.outer(layer1Output, dLayer2)
+      biasesL2 += learningRate * dLayer2
+
+      weightsL1 += learningRate * np.outer(inputVector, dLayer1)
+      biasesL1 += learningRate * dLayer1
+
+  return [weightsL1, biasesL1, weightsL2, biasesL2]
+
+
+def neuralNetwork2LayersProduction(weights: list, inputs: list, numberOfOutputs) -> list:
+  """
+  Neural network with 3 inputs and 3 outputs.
+  No hidden layers.
+  """
+  pass
 
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
@@ -368,33 +430,28 @@ print("relevantIndicatorMatrix[2] dimensions", len(relevantIndicatorMatrix[2]), 
 print("relevantIndicatorMatrix[3] dimensions", len(relevantIndicatorMatrix[3]), len(relevantIndicatorMatrix[3][0]))
 
 dataLength = len(relevantIndicatorMatrix[0])
-splitRatio = 0.5
+splitRatio = 0.7
 splitIndex = int(dataLength * splitRatio)
 
-trainingData = [
+trainingDataMatrix = [
     relevantIndicatorMatrix[0][:splitIndex], # 1-roulement-sain-pignon-sain
     relevantIndicatorMatrix[1][:splitIndex], # 2-roulement-defaut-pignon-sain
     relevantIndicatorMatrix[2][:splitIndex], # 3-roulement-sain-pignon-defaut
     relevantIndicatorMatrix[3][:splitIndex], # 4-roulement-defaut-pignon-defaut
 ]
 
-testingData = [
-    relevantIndicatorMatrix[0][splitIndex:], # 1-roulement-sain-pignon-sain
-    relevantIndicatorMatrix[1][splitIndex:], # 2-roulement-defaut-pignon-sain
-    relevantIndicatorMatrix[2][splitIndex:], # 3-roulement-sain-pignon-defaut
-    relevantIndicatorMatrix[3][splitIndex:], # 4-roulement-defaut-pignon-defaut
+trainingData = sum(trainingDataMatrix, [])
+
+testingDataMatrix = [
+  relevantIndicatorMatrix[0][splitIndex:], # 1-roulement-sain-pignon-sain
+  relevantIndicatorMatrix[1][splitIndex:], # 2-roulement-defaut-pignon-sain
+  relevantIndicatorMatrix[2][splitIndex:], # 3-roulement-sain-pignon-defaut
+  relevantIndicatorMatrix[3][splitIndex:], # 4-roulement-defaut-pignon-defaut
 ]
+testingData = sum(testingDataMatrix, [])
 
 print()
 print("trainingData dimensions", len(trainingData), len(trainingData[0]))
-print("trainingData[0] dimensions", len(trainingData[0]), len(trainingData[0][0]))
-print("trainingData[1] dimensions", len(trainingData[1]), len(trainingData[1][0]))
-print("trainingData[2] dimensions", len(trainingData[2]), len(trainingData[2][0]))
-print("trainingData[3] dimensions", len(trainingData[3]), len(trainingData[3][0]))
 
 print()
 print("testingData dimensions", len(testingData), len(testingData[0]))
-print("testingData[0] dimensions", len(testingData[0]), len(testingData[0][0]))
-print("testingData[1] dimensions", len(testingData[1]), len(testingData[1][0]))
-print("testingData[2] dimensions", len(testingData[2]), len(testingData[2][0]))
-print("testingData[3] dimensions", len(testingData[3]), len(testingData[3][0]))
