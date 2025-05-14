@@ -87,9 +87,9 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   # adapted if they expect a single signal array rather than a list of arrays.
 
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
-signalMatrix2 = importSignal("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
-signalMatrix3 = importSignal("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
-signalMatrix4 = importSignal("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
+signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
+signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
+signalMatrix4 = importSignalList("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
 
 print("signalMatrix1", len(signalMatrix1))
 print("signalMatrix2", len(signalMatrix2))
