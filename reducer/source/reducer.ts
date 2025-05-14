@@ -3,10 +3,10 @@
  */
 
 import * as fs from 'fs'
-import { calculateFeatureSet, type FeatureSet } from './feature/feature'
+import { calculateFeatureSet, type Feature, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
 import { navigateFromRoot } from './navigate-from-root'
-import { calculateFeatureRelevanceByVariance, calculateFeatureRelevanceByVarianceOrdered } from './sbs/feature-relevance-through-variance'
+import { calculateFeatureRelevanceByVarianceOrdered } from './sbs/feature-relevance-through-variance'
 import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
@@ -79,3 +79,6 @@ console.time('features-variance-3')
 const relevantFeatures4 = sbs3(classes)
 console.log('Relevant Features 3:', relevantFeatures4)
 console.timeEnd('features-variance-3')
+
+const relevantFeatures: Feature[] = relevantFeatures4.slice(0, 3)
+console.log('Relevant Features:', relevantFeatures)
