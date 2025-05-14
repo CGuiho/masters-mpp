@@ -20,6 +20,19 @@ def importSignal(file_path):
   data = np.genfromtxt(file_path, delimiter=',', usecols=1)
   return data
 
+def importSignalList(dir_path):
+  prefix = "acc_"
+
+  signals = []
+  for i in range(11, 70 + 1):
+    file_name = f"{prefix}{i:05d}.csv"
+    full_file_path = f"{dir_path}/{file_name}"
+    
+    data = importSignal(full_file_path)
+    signals.append(data)
+  return signals
+
+
 def calculateIndicators(signal: np.ndarray) -> dict:  
   """
     Interface Indicator
@@ -66,31 +79,37 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   }
 
 
-s1 = importSignal("./tp-reducer/data/1-roulement-sain-pignon-sain/acc_00001.csv")
-s2 = importSignal("./tp-reducer/data/2-roulement-defaut-pignon-sain/acc_00001.csv")
-s3 = importSignal("./tp-reducer/data/3-roulement-sain-pignon-defaut/acc_00001.csv")
-s4 = importSignal("./tp-reducer/data/4-roulement-defaut-pignon-defaut/acc_00001.csv")
+  # After this block, 's1' will be a list of numpy arrays.
+  # The user will need to ensure that the subsequent line in their original code,
+  # s1 = importSignal("./tp-reducer/data/1-roulement-sain-pignon-sain/acc_00001.csv"),
+  # is removed or commented out to prevent 's1' from being overwritten.
+  # Also, subsequent operations like calculateIndicators(s1) will need to be
+  # adapted if they expect a single signal array rather than a list of arrays.
 
-print("s1(t)", s1)
-print("s2(t)", s2)
-print("s3(t)", s3)
-print("s4(t)", s4)
+s1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 
-indicator1 = calculateIndicators(s1)
-indicator2 = calculateIndicators(s2)
-indicator3 = calculateIndicators(s3)
-indicator4 = calculateIndicators(s4)
+print("s1(t)", len(s1))
+
+# print("s1(t)", s1)
+# print("s2(t)", s2)
+# print("s3(t)", s3)
+# print("s4(t)", s4)
+
+# indicator1 = calculateIndicators(s1)
+# indicator2 = calculateIndicators(s2)
+# indicator3 = calculateIndicators(s3)
+# indicator4 = calculateIndicators(s4)
 
 
-print(f"Mean: {indicator1['mean']}")
-print(f"Kurtosis: {indicator1['kurtosis']}")
+# print(f"Mean: {indicator1['mean']}")
+# print(f"Kurtosis: {indicator1['kurtosis']}")
 
-print(f"Mean: {indicator2['mean']}")
-print(f"Kurtosis: {indicator2['kurtosis']}")
+# print(f"Mean: {indicator2['mean']}")
+# print(f"Kurtosis: {indicator2['kurtosis']}")
 
-print(f"Mean: {indicator3['mean']}")
-print(f"Kurtosis: {indicator3['kurtosis']}")
+# print(f"Mean: {indicator3['mean']}")
+# print(f"Kurtosis: {indicator3['kurtosis']}")
 
-print(f"Mean: {indicator4['mean']}")
-print(f"Kurtosis: {indicator4['kurtosis']}")
+# print(f"Mean: {indicator4['mean']}")
+# print(f"Kurtosis: {indicator4['kurtosis']}")
 
