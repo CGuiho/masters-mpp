@@ -8,7 +8,7 @@
   "workbench.colorCustomizations": {
     "editorUnnecessaryCode.border": "#f02222",
 
-    "titleBar.activeBackground": "#228cd2",
+    "titleBar.activeBackground": "#d222ac",
     "titleBar.activeForeground": "#ffffff"
   },
   "github-actions.workflows.pinned.workflows": [],

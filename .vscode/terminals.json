@@ -3,34 +3,30 @@
   "autokill": true,
   "terminals": [
     {
-      "name": "GUIHO Organization",
-      "description": "GUIHO Organization",
+      "name": "GUIHO Destro Reducer",
+      "description": "GUIHO Destro Reducer",
       "icon": "zap",
       "color": "terminal.ansiWhite",
       "open": true,
       "focus": true,
       "commands": [
-        "cd organization",
-        "sleep 60",
-        "bun google-artifactregistry-auth",
+        "cd reducer",
         "bun upgrade",
         "bun run typecheck"
       ]
     },
     {
-      "split": "GUIHO Organization",
-      "name": "GUIHO Organization Server",
-      "description": "GUIHO Organization Server",
+      "split": "GUIHO Destro Reducer",
+      "name": "GUIHO Destro Reducer Server",
+      "description": "GUIHO Destro Reducer Server",
       "icon": "zap",
       "color": "terminal.ansiWhite",
       "open": true,
       "focus": true,
       "commands": [
-        "cd organization",
-        "bun google-artifactregistry-auth",
-        "source .env.sh",
+        "cd reducer",
         "bun install || bun clean-hard && bun install",
-        "bun clean && source .env.sh && bun dev"
+        "bun clean"
       ]
     }
   ]
