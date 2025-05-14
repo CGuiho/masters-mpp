@@ -29,9 +29,10 @@ const dataSourcesPromise = subdirectories.map(async subdirectory => {
   const files = fs.readdirSync(subdirectoryPath, { withFileTypes: true })
   const signalFiles = files.filter(dirent => dirent.isFile() && dirent.name.endsWith('.csv')).map(dirent => dirent.name)
 
+  const COLUMN_OF_SIGNAL = 1
   const signalsPromise = signalFiles
     .filter((_, i) => i >= OFFSET)
-    .map(file => loadSignalFromTextBasedFile(`${subdirectoryPath}/${file}`, 0, ','))
+    .map(file => loadSignalFromTextBasedFile(`${subdirectoryPath}/${file}`, COLUMN_OF_SIGNAL, ','))
 
   const signals = await Promise.all(signalsPromise)
   return { id: subdirectory, signals: signals } satisfies DataSource
@@ -46,6 +47,8 @@ type DataWithFeatures = {
   features: FeatureSet[]
 }
 console.log('Data Sources:', dataSources[0]?.signals.length)
+console.log('Data Sources:', dataSources[0]?.signals[0]!.length)
+console.log('Data Sources:', dataSources[0]?.signals[0])
 
 console.time('features-calculation')
 const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
@@ -82,3 +85,25 @@ console.timeEnd('features-variance-3')
 
 const relevantFeatures: Feature[] = relevantFeatures4.slice(0, 3)
 console.log('Relevant Features:', relevantFeatures)
+
+type RelevantData = {
+  id: string
+  features: Partial<FeatureSet>[]
+}
+
+
+const relevantData = featuresData.map(({ id, features }) => {
+  const relevantFeaturesData = features.map(featureSet => {
+    const relevantFeatureSet: Partial<FeatureSet> = {}
+    for (const feature of relevantFeatures) {
+      if (featureSet[feature] !== undefined) {
+        relevantFeatureSet[feature] = featureSet[feature]
+      }
+    }
+    return relevantFeatureSet
+  })
+  return { id, features: relevantFeaturesData } satisfies RelevantData
+})
+
+console.log('Relevant Data:', relevantData[0]?.features.length)
+console.log('Relevant Data:', relevantData[0]?.features[0])
