@@ -195,23 +195,18 @@ def selectRelevantIndicators(matricesOfIndicatorMatrix: list, desiredRelevantInd
                     or data cannot be processed.
     """
 
-    # --- 1. Input Validation and Initialization ---
-    if not isinstance(matricesOfIndicatorMatrix, list):
-        raise TypeError("Input 'matricesOfIndicatorMatrix' must be a list.")
-    if not isinstance(desiredRelevantIndicatorLength, int):
-        raise TypeError("Input 'desiredRelevantIndicatorLength' must be an integer.")
-    if desiredRelevantIndicatorLength < 0:
-        raise ValueError("desiredRelevantIndicatorLength cannot be negative.")
 
-    if not matricesOfIndicatorMatrix: # Handle empty list of matrices
-        return []
+    if not isinstance(matricesOfIndicatorMatrix, list): raise TypeError("Input 'matricesOfIndicatorMatrix' must be a list.")
+    if not isinstance(desiredRelevantIndicatorLength, int): raise TypeError("Input 'desiredRelevantIndicatorLength' must be an integer.")
+    if desiredRelevantIndicatorLength < 0: raise ValueError("desiredRelevantIndicatorLength cannot be negative.")
+
+    if not matricesOfIndicatorMatrix: return []
 
     np_matrices = []
     initial_num_indicators = -1
 
     for i, mat_data in enumerate(matricesOfIndicatorMatrix):
-        if not isinstance(mat_data, (list, np.ndarray)):
-            raise TypeError(f"Matrix at index {i} is not a list or NumPy array.")
+        if not isinstance(mat_data, (list, np.ndarray)): raise TypeError(f"Matrix at index {i} is not a list or NumPy array.")
         
         try:
             # Attempt to convert to float, as variance calculation requires numeric data
@@ -339,6 +334,7 @@ signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sa
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
 signalMatrix4 = importSignalList("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
 
+print()
 print("signalMatrix1", len(signalMatrix1))
 print("signalMatrix2", len(signalMatrix2))
 print("signalMatrix3", len(signalMatrix3))
@@ -349,6 +345,7 @@ indicatorMatrix2 = [calculateIndicatorsVector(signal) for signal in signalMatrix
 indicatorMatrix3 = [calculateIndicatorsVector(signal) for signal in signalMatrix3]
 indicatorMatrix4 = [calculateIndicatorsVector(signal) for signal in signalMatrix4]
 
+print()
 print("indicatorMatrix1 dimensions", len(indicatorMatrix1), len(indicatorMatrix1[0]))
 print("indicatorMatrix2 dimensions", len(indicatorMatrix2), len(indicatorMatrix2[0]))
 print("indicatorMatrix3 dimensions", len(indicatorMatrix3), len(indicatorMatrix3[0]))
@@ -363,10 +360,41 @@ matrixOfIndicatorMatrices = [
 
 relevantIndicatorMatrix = selectRelevantIndicators(matrixOfIndicatorMatrices, 3)
 
+print()
 print("relevantIndicatorMatrix dimensions", len(relevantIndicatorMatrix), len(relevantIndicatorMatrix[0]))
 print("relevantIndicatorMatrix[0] dimensions", len(relevantIndicatorMatrix[0]), len(relevantIndicatorMatrix[0][0]))
 print("relevantIndicatorMatrix[1] dimensions", len(relevantIndicatorMatrix[1]), len(relevantIndicatorMatrix[1][0]))
 print("relevantIndicatorMatrix[2] dimensions", len(relevantIndicatorMatrix[2]), len(relevantIndicatorMatrix[2][0]))
 print("relevantIndicatorMatrix[3] dimensions", len(relevantIndicatorMatrix[3]), len(relevantIndicatorMatrix[3][0]))
 
+dataLength = len(relevantIndicatorMatrix[0])
+splitRatio = 0.5
+splitIndex = int(dataLength * splitRatio)
 
+trainingData = [
+    relevantIndicatorMatrix[0][:splitIndex], # 1-roulement-sain-pignon-sain
+    relevantIndicatorMatrix[1][:splitIndex], # 2-roulement-defaut-pignon-sain
+    relevantIndicatorMatrix[2][:splitIndex], # 3-roulement-sain-pignon-defaut
+    relevantIndicatorMatrix[3][:splitIndex], # 4-roulement-defaut-pignon-defaut
+]
+
+testingData = [
+    relevantIndicatorMatrix[0][splitIndex:], # 1-roulement-sain-pignon-sain
+    relevantIndicatorMatrix[1][splitIndex:], # 2-roulement-defaut-pignon-sain
+    relevantIndicatorMatrix[2][splitIndex:], # 3-roulement-sain-pignon-defaut
+    relevantIndicatorMatrix[3][splitIndex:], # 4-roulement-defaut-pignon-defaut
+]
+
+print()
+print("trainingData dimensions", len(trainingData), len(trainingData[0]))
+print("trainingData[0] dimensions", len(trainingData[0]), len(trainingData[0][0]))
+print("trainingData[1] dimensions", len(trainingData[1]), len(trainingData[1][0]))
+print("trainingData[2] dimensions", len(trainingData[2]), len(trainingData[2][0]))
+print("trainingData[3] dimensions", len(trainingData[3]), len(trainingData[3][0]))
+
+print()
+print("testingData dimensions", len(testingData), len(testingData[0]))
+print("testingData[0] dimensions", len(testingData[0]), len(testingData[0][0]))
+print("testingData[1] dimensions", len(testingData[1]), len(testingData[1][0]))
+print("testingData[2] dimensions", len(testingData[2]), len(testingData[2][0]))
+print("testingData[3] dimensions", len(testingData[3]), len(testingData[3][0]))
