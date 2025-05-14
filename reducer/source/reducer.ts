@@ -41,6 +41,7 @@ type DataWithFeatures = {
   id: string
   features: FeatureSet[]
 }
+console.log('Data Sources:', dataSources[0]?.signals.length)
 
 console.time('features-calculation')
 const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
@@ -48,5 +49,7 @@ const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
   return { id, features } satisfies DataWithFeatures
 })
 console.timeEnd('features-calculation')
+
+console.log('Data With Features:', featuresData[0]?.features.length)
 
 
