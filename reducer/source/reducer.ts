@@ -5,7 +5,7 @@
 import * as fs from 'fs'
 import { loadSignalFromTextBasedFile } from './loader/loader'
 import { navigateFromRoot } from './navigate-from-root'
-import type { Signal, Vector } from './signal/signal'
+import type { Signal } from './signal/signal'
 
 type DataSource = {
   id: string
@@ -13,6 +13,8 @@ type DataSource = {
 }
 
 const OFFSET = 10
+
+console.time('data-sources')
 
 const dataDirectory = navigateFromRoot('./data')
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
@@ -29,5 +31,7 @@ const dataSourcesPromise = subdirectories.map(async subdirectory => {
 })
 
 const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
+
+console.timeEnd('data-sources')
 
 console.log('Data sources loaded:', dataSources.length)
