@@ -1,0 +1,76 @@
+
+
+% % définition des variable d’entrée
+
+n = 70;
+M = 4;
+
+INDICATEURS_INITIAL= 8;
+INDICATEURS_FINAL= 3;
+
+%% Importation des matrices données de chaque matrice
+
+MATRICE_DONNEE {1} = importdata('tp2_Reducteur_TECHNIVB_defaut_bague_inner_Pignon_dent_cassée.xlsx');
+MATRICE_DONNEE {2} = importdata('tp2_Reducteur_TECHNIVB_defaut_bague_inner_Pignon_sain.xlsx');
+MATRICE_DONNEE {3} = importdata('tp2_Reducteur_TECHNIVB_Roulement_sain_Pignon_dent_cassée.xlsx');
+MATRICE_DONNEE {4} = importdata('tp2_Reducteur_TECHNIVB_Roulement_sain_Pignon_sain.xlsx');
+
+%% Début du programme
+
+SERIE_INDICATEUR = 1: INDICATEURS_INITIAL;
+
+for K = INDICATEURS_INITIAL :-1: INDICATEURS_FINAL+1 
+    for L = 1 : length (SERIE_INDICATEUR)
+        %% Début de séquence de suppression des indicateurs les moins pertinents
+        INDICATEUR_SELECT = SERIE_INDICATEUR;
+        INDICATEUR_SELECT (L) = [];
+
+        %% Calcul du critère de qualité J pour l’indicateur supprimé
+        %% Calcul de la dispersion intra classe
+
+        DISP_INTRA= 0;
+        X={};
+
+        for i = 1 : M
+            X{i} = MATRICE_DONNEE{i}(:,INDICATEUR_SELECT);
+            gi = mean (X{i});
+            for j = 10 : n
+                Xij = X{i} (j,:);
+
+                DISP_INTRA = DISP_INTRA+(Xij-gi)*(Xij-gi)' ;
+            end
+        end
+        %% Calcul de la dispersion inter classe
+
+        g = 0;
+
+        DISP_INTER =0;
+
+        for i =1:M
+            gi= mean (X{i});
+            g = g + (1/M) * gi;
+        end
+
+        for i =1:M
+            gi= mean (X{i});
+            DISP_INTER = DISP_INTER + (gi - g)*(gi - g)';
+        end
+
+        %% Calcul du critère J
+        J (L) = (DISP_INTER/DISP_INTRA);
+
+    end
+
+    %% Localisation de la positon (POS) de l’indicateur le moins pertinent
+
+    POS= find(J==max(J));
+    SERIE_INDICATEUR (POS(1)) = [];
+
+end
+
+SERIE_INDICATEUR %% Vecteur qui contient les indicateurs les plus pertinents;
+
+plot3(MATRICE_DONNEE{1}(:,SERIE_INDICATEUR(1)),MATRICE_DONNEE{1}(:,SERIE_INDICATEUR(2)),MATRICE_DONNEE{1}(:,SERIE_INDICATEUR(3)),'s')
+plot3(MATRICE_DONNEE{2}(:,SERIE_INDICATEUR(1)),MATRICE_DONNEE{2}(:,SERIE_INDICATEUR(2)),MATRICE_DONNEE{2}(:,SERIE_INDICATEUR(3)),'*')
+plot3(MATRICE_DONNEE{3}(:,SERIE_INDICATEUR(1)),MATRICE_DONNEE{3}(:,SERIE_INDICATEUR(2)),MATRICE_DONNEE{3}(:,SERIE_INDICATEUR(3)),'o')
+plot3(MATRICE_DONNEE{4}(:,SERIE_INDICATEUR(1)),MATRICE_DONNEE{4}(:,SERIE_INDICATEUR(2)),MATRICE_DONNEE{4}(:,SERIE_INDICATEUR(3)),'*r')
