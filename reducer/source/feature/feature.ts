@@ -5,7 +5,7 @@
 import type { Signal } from '../signal/signal'
 
 export { calculateFeatureSet, energy, kurtosis, mean, peak, power, rms, skewness, stdDev, variance }
-export type { FeatureSet }
+export type { FeatureSet, Feature }
 
 type FeatureSet = {
   mean: number
@@ -20,6 +20,8 @@ type FeatureSet = {
   crestFactor: number
   kFactor: number
 }
+
+type Feature = keyof FeatureSet
 
 function calculateFeatureSet(signal: Signal): FeatureSet {
   const meanValue = mean(signal)
@@ -67,12 +69,12 @@ function mean(signal: number[]): number {
  * @param signal An array of numbers.
  * @returns The variance of the signal, or NaN if the signal is empty.
  */
-function variance(signal: number[], meanValue?: number): number {
+function variance(signal: number[]): number {
   const n = signal.length
   if (n === 0) {
     return NaN
   }
-  const signalMean = meanValue || mean(signal)
+  const signalMean = mean(signal)
   if (isNaN(signalMean)) {
     return NaN
   }
@@ -87,8 +89,8 @@ function variance(signal: number[], meanValue?: number): number {
  * @param signal An array of numbers.
  * @returns The standard deviation of the signal, or NaN if the signal is empty.
  */
-function stdDev(signal: number[], varianceValue?: number): number {
-  const signalVariance = varianceValue || variance(signal)
+function stdDev(signal: number[]): number {
+  const signalVariance = variance(signal)
   if (isNaN(signalVariance)) {
     return NaN
   }
