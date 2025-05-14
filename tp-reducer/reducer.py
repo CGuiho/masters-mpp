@@ -78,19 +78,30 @@ def calculateIndicators(signal: np.ndarray) -> dict:
   }
 
 
-  # After this block, 's1' will be a list of numpy arrays.
-  # The user will need to ensure that the subsequent line in their original code,
-  # s1 = importSignal("./tp-reducer/data/1-roulement-sain-pignon-sain/acc_00001.csv"),
-  # is removed or commented out to prevent 's1' from being overwritten.
-  # Also, subsequent operations like calculateIndicators(s1) will need to be
-  # adapted if they expect a single signal array rather than a list of arrays.
+def calculateIndicatorsVector(signal: np.ndarray) -> dict:  
+  indicator_dict = calculateIndicators(signal)
 
+  return [
+    indicator_dict["energy"],
+    indicator_dict["power"],
+    indicator_dict["peak"],
+    indicator_dict["mean"],
 
+    indicator_dict["rms"],
+    indicator_dict["kurtosis"],
+    indicator_dict["crest_factor"],
+    indicator_dict["k_factor"],
+    # indicator_dict["std_dev"],
+    # indicator_dict["variance"],
+    # indicator_dict["skewness"],
+  ]
 
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
 signalMatrix4 = importSignalList("./tp-reducer/data/4-roulement-defaut-pignon-defaut/")
+
+
 
 print("signalMatrix1", len(signalMatrix1))
 print("signalMatrix2", len(signalMatrix2))
