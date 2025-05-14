@@ -114,6 +114,10 @@ def calculateIndicatorsMatrix(signalMatrix: list) -> list:
   
   return [calculateIndicatorsVector(signal) for signal in signalMatrix]
 
+def selectRelevantIndicators(all_indicator_matrices: list, desiredRelevantIndicatorLength: int) -> list:
+  initial
+  return
+
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
@@ -134,26 +138,13 @@ print("indicatorMatrix2 dimensions", len(indicatorMatrix2), len(indicatorMatrix2
 print("indicatorMatrix3 dimensions", len(indicatorMatrix3), len(indicatorMatrix3[0]))
 print("indicatorMatrix4 dimensions", len(indicatorMatrix4), len(indicatorMatrix4[0]))
 
-# print("s1(t)", s1)
-# print("s2(t)", s2)
-# print("s3(t)", s3)
-# print("s4(t)", s4)
+reducedIndicatorMatrix1 = selectRelevantIndicators(indicatorMatrix1, 3)
+reducedIndicatorMatrix2 = selectRelevantIndicators(indicatorMatrix2, 3)
+reducedIndicatorMatrix3 = selectRelevantIndicators(indicatorMatrix3, 3)
+reducedIndicatorMatrix4 = selectRelevantIndicators(indicatorMatrix4, 3)
 
-# indicator1 = calculateIndicators(s1)
-# indicator2 = calculateIndicators(s2)
-# indicator3 = calculateIndicators(s3)
-# indicator4 = calculateIndicators(s4)
-
-
-# print(f"Mean: {indicator1['mean']}")
-# print(f"Kurtosis: {indicator1['kurtosis']}")
-
-# print(f"Mean: {indicator2['mean']}")
-# print(f"Kurtosis: {indicator2['kurtosis']}")
-
-# print(f"Mean: {indicator3['mean']}")
-# print(f"Kurtosis: {indicator3['kurtosis']}")
-
-# print(f"Mean: {indicator4['mean']}")
-# print(f"Kurtosis: {indicator4['kurtosis']}")
+print("reducedIndicatorMatrix1 dimensions", len(reducedIndicatorMatrix1), len(reducedIndicatorMatrix1[0]))
+print("reducedIndicatorMatrix2 dimensions", len(reducedIndicatorMatrix2), len(reducedIndicatorMatrix2[0]))
+print("reducedIndicatorMatrix3 dimensions", len(reducedIndicatorMatrix3), len(reducedIndicatorMatrix3[0]))
+print("reducedIndicatorMatrix4 dimensions", len(reducedIndicatorMatrix4), len(reducedIndicatorMatrix4[0]))
 
