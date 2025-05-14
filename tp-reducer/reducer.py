@@ -391,6 +391,13 @@ def neuralNetwork2LayersProduction(weights: list, inputs: list, numberOfOutputs)
   """
   pass
 
+def repeat_list_elements(input: list, repetitions: int) -> list:
+  output_list = []
+  for item in range(repetitions):
+    output_list.append(item)
+  return output_list
+
+
 signalMatrix1 = importSignalList("./tp-reducer/data/1-roulement-sain-pignon-sain/")
 signalMatrix2 = importSignalList("./tp-reducer/data/2-roulement-defaut-pignon-sain/")
 signalMatrix3 = importSignalList("./tp-reducer/data/3-roulement-sain-pignon-defaut/")
@@ -439,8 +446,15 @@ trainingDataMatrix = [
     relevantIndicatorMatrix[2][:splitIndex], # 3-roulement-sain-pignon-defaut
     relevantIndicatorMatrix[3][:splitIndex], # 4-roulement-defaut-pignon-defaut
 ]
+desiredOutputsMatrix = [
+    repeat_list_elements([1, 0, 0], splitIndex), # 1-roulement-sain-pignon-sain
+    repeat_list_elements([0, 1, 0], splitIndex), # 2-roulement-defaut-pignon-sain
+    repeat_list_elements([0, 0, 1], splitIndex), # 3-roulement-sain-pignon-defaut
+    repeat_list_elements([0, 0, 1], splitIndex), # 4-roulement-defaut-pignon-defaut
+]
 
 trainingData = sum(trainingDataMatrix, [])
+desiredOutputs = sum(desiredOutputsMatrix, [])
 
 testingDataMatrix = [
   relevantIndicatorMatrix[0][splitIndex:], # 1-roulement-sain-pignon-sain
@@ -451,7 +465,13 @@ testingDataMatrix = [
 testingData = sum(testingDataMatrix, [])
 
 print()
+print("trainingDataMatrix dimensions", len(trainingDataMatrix), len(trainingDataMatrix[0]))
 print("trainingData dimensions", len(trainingData), len(trainingData[0]))
 
 print()
+print("desiredOutputsMatrix dimensions", len(desiredOutputsMatrix), len(desiredOutputsMatrix[0]))
+print("desiredOutputs dimensions", len(desiredOutputs), len(desiredOutputs[0]))
+
+print()
+print("testingDataMatrix dimensions", len(testingDataMatrix), len(testingDataMatrix[0]))
 print("testingData dimensions", len(testingData), len(testingData[0]))
