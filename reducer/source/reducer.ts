@@ -12,20 +12,22 @@ type DataSource = {
   signals: Signal[]
 }
 
-const OFFSET = 10
-
 console.time('data-sources')
 
 const dataDirectory = navigateFromRoot('./data')
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
 const subdirectories = entries.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
 
+const OFFSET = 10
 const dataSourcesPromise = subdirectories.map(async subdirectory => {
   const subdirectoryPath = `${dataDirectory}/${subdirectory}`
   const files = fs.readdirSync(subdirectoryPath, { withFileTypes: true })
   const signalFiles = files.filter(dirent => dirent.isFile() && dirent.name.endsWith('.csv')).map(dirent => dirent.name)
 
-  const signalsPromise = signalFiles.map(file => loadSignalFromTextBasedFile(`${subdirectoryPath}/${file}`, 0, ','))
+  const signalsPromise = signalFiles
+    .filter((_, i) => i >= OFFSET)
+    .map(file => loadSignalFromTextBasedFile(`${subdirectoryPath}/${file}`, 0, ','))
+
   const signals = await Promise.all(signalsPromise)
   return { id: subdirectory, signals: signals } satisfies DataSource
 })
@@ -37,4 +39,3 @@ console.timeEnd('data-sources')
 console.log('Data sources loaded:', dataSources.length)
 console.log('Data sources loaded:', dataSources[0]?.id)
 console.log('Data sources loaded:', dataSources[0]?.signals.length)
-console.log('Data sources loaded:', dataSources[0]?.signals[0]?.length)
