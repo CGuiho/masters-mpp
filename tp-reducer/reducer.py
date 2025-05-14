@@ -477,3 +477,11 @@ print()
 print("testingDataMatrix dimensions", len(testingDataMatrix), len(testingDataMatrix[0]))
 print("testingData dimensions", len(testingData), len(testingData[0]))
 
+# Train the neural network
+[weightsL1, biasesL1, weightsL2, biasesL2] = neuralNetwork2LayersTraining(trainingData, desiredOutputs)
+
+print()
+print("weightsL1 dimensions", len(weightsL1))
+print("biasesL1 dimensions", len(biasesL1))
+print("weightsL2 dimensions", len(weightsL2))
+print("biasesL2 dimensions", len(biasesL2))
