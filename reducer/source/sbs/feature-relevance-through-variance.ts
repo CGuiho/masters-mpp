@@ -4,7 +4,16 @@
 
 import { variance, type Feature, type FeatureSet } from '../feature/feature'
 
-export { calculateFeatureRelevanceByVariance }
+export { calculateFeatureRelevanceByVariance, calculateFeatureRelevanceByVarianceOrdered }
+
+function calculateFeatureRelevanceByVarianceOrdered(featuresList: FeatureSet[]): Feature[] {
+  const scores = calculateFeatureRelevanceByVariance(featuresList)
+  const sortedFeatures = Object.entries(scores)
+    .filter(([_, score]) => !isNaN(score))
+    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+    .map(([feature]) => feature as Feature)
+  return sortedFeatures
+}
 
 /**
  * Calculates a relevance score (0 to 1) for each feature based on variance.
