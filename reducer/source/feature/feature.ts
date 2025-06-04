@@ -210,3 +210,66 @@ function kurtosis(signal: number[]): number {
   const m4 = sumOfQuarticDifferences / n
   return m4 / signalStdDev ** 4
 }
+
+
+/* 
+/**
+ * Calculates the crest factor of a signal.
+ * The crest factor is the ratio of the peak value of the signal to its root mean square (RMS) value.
+ *
+ * @param signal - An array of numbers representing the input signal.
+ * @returns The crest factor of the signal.
+ */
+function crestFactor(signal: number[]): number {
+  const peakValue = peak(signal)
+  const rmsValue = rms(signal)
+  return peakValue / rmsValue
+}
+
+/**
+ * Calculates the k-factor of a signal.
+ * The k-factor is the product of the peak value and the RMS value of the signal.
+ *
+ * @param signal - An array of numbers representing the input signal.
+ * @returns The k-factor of the signal.
+ */
+function kFactor(signal: number[]): number {
+  const peakValue = peak(signal)
+  const rmsValue = rms(signal)
+  return peakValue * rmsValue
+}
+
+/**
+ * Calculates the median of a signal.
+ * @param signal An array of numbers.
+ * @returns The median of the signal, or NaN if the signal is empty.
+ */
+function min(signal: number[]): number {
+  if (signal.length === 0) return NaN
+  return Math.min(...signal)
+}
+
+/**
+ * Calculates the maximum value of a signal.
+ * @param signal An array of numbers.
+ * @returns The maximum value of the signal, or NaN if the signal is empty.
+ */
+function max(signal: number[]): number {
+  if (signal.length === 0) return NaN
+  return Math.max(...signal)
+}
+
+/**
+ * Calculates the median of a signal.
+ * @param signal An array of numbers.
+ * @returns The median of the signal, or NaN if the signal is empty.
+ */
+function median(signal: number[]): number {
+  if (signal.length === 0) return NaN
+  const sorted = [...signal].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+}
+
+
+*/
