@@ -1,11 +1,11 @@
 {
   "40": {
-    "name": "G7000 GUIHO Destro Reducer",
+    "name": "G7000 GUIHO Destro Model",
     "version": {
       "name": "Cristóvão GUIHO"
     }
   },
-  "name": "reducer",
+  "name": "model",
   "version": "0.0.0",
   "private": true,
   "keywords": [],

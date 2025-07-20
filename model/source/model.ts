@@ -17,9 +17,18 @@ type DataSource = {
   signals: Signal[]
 }
 
+/**
+ * Démarrage de la temporisation de l'application.
+ */
 console.time('application')
 console.time('data-sources')
 
+/**
+ * Lecture des données à partir du répertoire spécifié.
+ * Le répertoire contient des sous-répertoires, chacun contenant des fichiers CSV de signaux.
+ * Chaque fichier CSV est chargé en tant que signal, et les signaux sont regroupés par sous-répertoire.
+ * Chaque sous-répertoire constitue un mode de fonctionnement différent.
+ */
 // const dataDirectory = navigateFromRoot('./data')
 const dataDirectory = navigateFromRoot('../data/tp-equilibrator-fresnel')
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
