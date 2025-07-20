@@ -21,7 +21,7 @@ console.time('application')
 console.time('data-sources')
 
 // const dataDirectory = navigateFromRoot('./data')
-const dataDirectory = navigateFromRoot('../tp-equilibrator/data')
+const dataDirectory = navigateFromRoot('../data/tp-equilibrator-fresnel')
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
 const subdirectories = entries.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
 
