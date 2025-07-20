@@ -4,8 +4,28 @@
 
 import type { Signal } from '../signal/signal'
 
-export { calculateFeatureSet, energy, kurtosis, mean, peak, power, rms, skewness, stdDev, variance }
-export type { FeatureSet, Feature }
+export {
+  calculateFeatureSet,
+  energy,
+  kurtosis,
+  mean,
+  peak,
+  power,
+  rms,
+  skewness,
+  stdDev,
+  variance,
+
+  /**
+   * Not use on FeatureSet, but exported for convenience.
+   */
+  crestFactor,
+  kFactor,
+  min,
+  max,
+  median,
+}
+export type { Feature, FeatureSet }
 
 type FeatureSet = {
   mean: number
@@ -211,7 +231,6 @@ function kurtosis(signal: number[]): number {
   return m4 / signalStdDev ** 4
 }
 
-
 /* 
 /**
  * Calculates the crest factor of a signal.
@@ -266,10 +285,8 @@ function max(signal: number[]): number {
  */
 function median(signal: number[]): number {
   if (signal.length === 0) return NaN
+  if (signal.length === 1) return signal[0]!
   const sorted = [...signal].sort((a, b) => a - b)
   const mid = Math.floor(sorted.length / 2)
-  return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+  return sorted.length % 2 !== 0 ? sorted[mid]! : (sorted[mid - 1]! + sorted[mid]!) / 2
 }
-
-
-*/
