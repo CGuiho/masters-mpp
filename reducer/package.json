@@ -12,11 +12,18 @@
   "license": "PROPRIETARY",
   "description": "",
   "type": "module",
-  "homepage": "https://nante40.guiho.co",
+  "homepage": "https://guiho.co/g7000",
   "author": {
     "name": "Cristóvão GUIHO",
     "email": "cg@guiho.co",
     "url": "https://guiho.co/cg"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .temp build",
+    "clean-hard": "rm -rf .temp build node_modules bun.lock",
+    "_tc": "bun run typecheck",
+    "_ci": "bun clean-hard && bun install"
   },
   "repository": {
     "type": "git",
