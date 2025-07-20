@@ -82,12 +82,13 @@ const dataSourcesPromise = subdirectories.map(async subdirectory => {
   return { id: subdirectory, signals: signals } satisfies DataSource
 })
 
+
+const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
+
 console.info(`
 Les données ont été chargées dans la mémoire.
 Les 10 premiers signaux de chaque mode de fonctionnement n'ont pas été pris en compte pour l'analyse.
   `)
-
-const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
 
 console.timeEnd('Temps de chargement des données.')
 
@@ -95,18 +96,23 @@ type DataWithFeatures = {
   id: string
   features: FeatureSet[]
 }
-console.log('Data Sources:', dataSources[0]?.signals.length)
-console.log('Data Sources:', dataSources[0]?.signals[0]!.length)
-console.log('Data Sources:', dataSources[0]?.signals[0])
 
-console.time('features-calculation')
+console.info('Nombre de Modes de fonctionnement :', dataSources.length)
+console.info('Nombre de Signaux pour chaque mode de fonctionnement :', dataSources[0]?.signals[0]!.length)
+// console.log('Data Sources :', dataSources[0]?.signals[0])
+
+console.time('Durée du calcul des indicateurs de chaque signal')
 const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
   const features = signals.map(signal => calculateFeatureSet(signal))
   return { id, features } satisfies DataWithFeatures
 })
-console.timeEnd('features-calculation')
+console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 
-console.log('Data With Features:', featuresData[0]?.features.length)
+// console.log('Data With Features:', featuresData[0]?.features.length)
+
+console.info('\n\n\n\n')
+
+console.info('\n\n\n\n')
 
 const classes = featuresData.map(({ features }) => features)
 const featuresList = featuresData.map(({ features }) => features).flat()
@@ -116,10 +122,7 @@ const relevantFeatures2 = sbs(classes)
 console.log('Relevant Features 0:', relevantFeatures2)
 console.timeEnd('features-variance-0')
 
-console.time('features-variance-1')
-const relevantFeatures1 = calculateFeatureRelevanceByVarianceOrdered(featuresList)
-console.log('Relevant Features 1:', relevantFeatures1)
-console.timeEnd('features-variance-1')
+// const relevantFeatures1 = calculateFeatureRelevanceByVarianceOrdered(featuresList)
 
 console.time('features-variance-2')
 const relevantFeatures3 = sbs2(classes)
