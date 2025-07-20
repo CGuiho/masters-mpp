@@ -18,7 +18,6 @@ type DataSource = {
 }
 
 console.time('application')
-
 console.time('data-sources')
 
 // const dataDirectory = navigateFromRoot('./data')
