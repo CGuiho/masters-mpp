@@ -17,11 +17,14 @@ type DataSource = {
   signals: Signal[]
 }
 
+console.info('\nStarting model application...\n')
+console.info('\nAuthor: Cristóvão GUIHO\n')
+
 /**
  * Démarrage de la temporisation de l'application.
  */
 console.time('application')
-console.time('data-sources')
+console.time('Temps de chargement des données.')
 
 /**
  * Lecture des données à partir du répertoire spécifié.
@@ -29,8 +32,38 @@ console.time('data-sources')
  * Chaque fichier CSV est chargé en tant que signal, et les signaux sont regroupés par sous-répertoire.
  * Chaque sous-répertoire constitue un mode de fonctionnement différent.
  */
-// const dataDirectory = navigateFromRoot('./data')
-const dataDirectory = navigateFromRoot('../data/tp-equilibrator-fresnel')
+console.info(`  
+/**
+ * Lecture des données à partir du répertoire spécifié.
+ * Le répertoire contient des sous-répertoires, chacun contenant des fichiers CSV de signaux.
+ * Chaque fichier CSV est chargé en tant que signal, et les signaux sont regroupés par sous-répertoire.
+ * Chaque sous-répertoire constitue un mode de fonctionnement différent.
+ * 
+ * data/ 
+ *   - mode-de-fonctionnement-1/
+ *     - acc_00001.csv
+ *     - acc_00002.csv
+ *     - ...
+ *     - acc_00070.csv
+ *   - mode-de-fonctionnement-2/
+ *   - mode-de-fonctionnement-3/
+ *   - mode-de-fonctionnement-4/
+ */
+`)
+
+/**
+ * Lecture de l'argument de ligne de commande pour le répertoire des données.
+ */
+
+const DEFAULT_DATA_DIRECTORY = './data'
+const userDataDirectory = process.argv[2]
+if (!userDataDirectory) {
+  console.warn('😥 No data directory specified. Using default directory:', DEFAULT_DATA_DIRECTORY)
+}
+
+console.info('\nUsing data directory:', userDataDirectory || DEFAULT_DATA_DIRECTORY, '\n')
+
+const dataDirectory = navigateFromRoot(userDataDirectory || DEFAULT_DATA_DIRECTORY)
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
 const subdirectories = entries.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
 
@@ -49,9 +82,14 @@ const dataSourcesPromise = subdirectories.map(async subdirectory => {
   return { id: subdirectory, signals: signals } satisfies DataSource
 })
 
+console.info(`
+Les données ont été chargées dans la mémoire.
+Les 10 premiers signaux de chaque mode de fonctionnement n'ont pas été pris en compte pour l'analyse.
+  `)
+
 const dataSources: DataSource[] = await Promise.all(dataSourcesPromise)
 
-console.timeEnd('data-sources')
+console.timeEnd('Temps de chargement des données.')
 
 type DataWithFeatures = {
   id: string
@@ -69,7 +107,6 @@ const featuresData: DataWithFeatures[] = dataSources.map(({ id, signals }) => {
 console.timeEnd('features-calculation')
 
 console.log('Data With Features:', featuresData[0]?.features.length)
-
 
 const classes = featuresData.map(({ features }) => features)
 const featuresList = featuresData.map(({ features }) => features).flat()
@@ -101,7 +138,6 @@ type RelevantData = {
   id: string
   features: Partial<FeatureSet>[]
 }
-
 
 const relevantData = featuresData.map(({ id, features }) => {
   const relevantFeaturesData = features.map(featureSet => {
