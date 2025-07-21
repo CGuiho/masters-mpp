@@ -8,8 +8,7 @@
  * The relative path is the file path on workspace or folder.
  */
 
-import { type Model, type Observation, initializeModel, predictWithSoftmaxAndTemperature } from './model'
-import { HIDDEN_LAYER_SIZES, OUTPUT_SIZE } from './model-constant'
+import { type Model, type TrainingObservation, initializeModel, predictWithSoftmaxAndTemperature } from './model'
 
 export { trainModel }
 
@@ -29,70 +28,54 @@ function sigmoidDerivative(x: number): number {
  * @param learningRate The learning rate for weight and bias updates.
  * @returns The trained model with updated weights and biases.
  */
-function trainModel(trainingData: Observation[], epochs: number, learningRate: number): Model {
+function trainModel(trainingData: TrainingObservation[], epochs: number, learningRate: number): Model {
+  // Ensure there is data to train on
   if (trainingData.length === 0) {
-    throw new Error('Training data cannot be empty. eb6a5e7d')
+    throw new Error('Training data cannot be empty.')
   }
+
+  if (!trainingData[0]!.value || !trainingData[0]!.expected) throw new Error('Invalid training data format.')
+
   const inputSize = trainingData[0]!.value.length
-  const outputSize = OUTPUT_SIZE // As per the requirement
-  const hiddenLayers = HIDDEN_LAYER_SIZES // As per the requirement
+  const outputSize = trainingData[0]!.expected.length
+  const hiddenLayers = [4, 4] // As per the requirement
 
   let trainedModel = initializeModel(inputSize, hiddenLayers, outputSize)
 
   for (let epoch = 0; epoch < epochs; epoch++) {
     for (const observation of trainingData) {
       // Forward pass
-      const outputs = predictWithSoftmaxAndTemperature(trainedModel, observation, 1.0)
-      const expected = observation.value // Assuming the target is the same as the input for this example
+      const outputs = predictWithSoftmaxAndTemperature(trainedModel, observation, 1)
 
-      if (expected.length !== outputSize) {
-        throw new Error(
-          `Expected output size ${outputSize} does not match the length of expected values ${expected.length}.`,
-        )
-      }
-      // Backward pass
+      // *** CRITICAL CHANGE HERE ***
+      // Calculate error based on the 'expected' output, not the input.
+      const expected = observation.expected
       let errors = expected.map((exp, i) => exp - outputs[i]!)
 
+      // Backward pass (Backpropagation)
       for (let i = trainedModel.layers.length - 1; i >= 0; i--) {
-        const layer = trainedModel.layers[i]
-
-        if (!layer) throw new Error(`Layer ${i} is undefined in the model.`)
-        if (trainedModel.layers[i - 1] === undefined)
-          throw new Error(`Layer ${i} does not have a previous layer to connect to.`)
-
+        const layer = trainedModel.layers[i]!
         const prevLayerOutputs = i === 0 ? observation.value : trainedModel.layers[i - 1]!.neurons.map(n => n.output!)
         const currentErrors: number[] = []
 
         for (let j = 0; j < layer.neurons.length; j++) {
-          const neuron = layer.neurons[j]
-          const error = errors[j]
-
-          if (error === undefined) throw new Error(`Error for neuron ${j} in layer ${i} is undefined.`)
-          if (neuron === undefined) throw new Error(`Neuron ${j} in layer ${i} is undefined.`)
-
+          const neuron = layer.neurons[j]!
+          const error = errors[j]!
           neuron.delta = error * sigmoidDerivative(neuron.output!)
 
-          // Calculate errors for the previous layer
-          for (let k = 0; k < neuron.weights.length; k++) {
-            if (i > 0) {
+          // Propagate errors to the previous layer
+          if (i > 0) {
+            for (let k = 0; k < neuron.weights.length; k++) {
               if (currentErrors[k] === undefined) {
                 currentErrors[k] = 0
               }
-              if (neuron.weights[k] === undefined)
-                throw new Error(`Weight ${k} for neuron ${j} in layer ${i} is undefined.`)
-              if (neuron.weights[k] === undefined)
-                throw new Error(`Weight ${k} for neuron ${j} in layer ${i} is undefined.`)
-
               currentErrors[k]! += neuron.weights[k]! * neuron.delta
             }
           }
 
           // Update weights and bias
           for (let k = 0; k < neuron.weights.length; k++) {
-            if (neuron.weights[k] === undefined) throw new Error(`Weight ${k} for neuron ${j} in layer ${i} is undefined.`)
-            if (prevLayerOutputs[k] === undefined) throw new Error(`Previous layer output ${k} for neuron ${j} in layer ${i} is undefined.`)
-
-              neuron.weights[k]! += learningRate * neuron.delta * prevLayerOutputs[k]!
+            neuron.weights[k]! += learningRate * neuron.delta * (prevLayerOutputs[k] ?? 0)
           }
           neuron.bias += learningRate * neuron.delta
         }
