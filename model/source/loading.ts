@@ -10,6 +10,7 @@ import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
 import type { Signal } from './signal/signal'
 import { sleep } from './sleep'
+import type { Observation } from './model'
 
 type DataSource = {
   id: string
@@ -141,17 +142,30 @@ type RelevantData = {
 }
 
 const relevantData = featuresData.map(({ id, features }) => {
-  const relevantFeaturesData = features.map(featureSet => {
-    const relevantFeatureSet: Partial<FeatureSet> = {}
+  const list = features.map(featureSet => {
+    const value: number[] = []
     for (const feature of relevantFeatures) {
       if (featureSet[feature] !== undefined) {
-        relevantFeatureSet[feature] = featureSet[feature]
+        value.push(featureSet[feature])
       }
     }
-    return relevantFeatureSet
+    return { id: 'unset', value } satisfies Observation
   })
-  return { id, features: relevantFeaturesData } satisfies RelevantData
+  return { id, value: list }
 })
+
+// const relevantData = featuresData.map(({ id, features }) => {
+//   const relevantFeaturesData = features.map(featureSet => {
+//     const relevantFeatureSet: Partial<FeatureSet> = {}
+//     for (const feature of relevantFeatures) {
+//       if (featureSet[feature] !== undefined) {
+//         relevantFeatureSet[feature] = featureSet[feature]
+//       }
+//     }
+//     return relevantFeatureSet
+//   })
+//   return { id, features: relevantFeaturesData } satisfies RelevantData
+// })
 
 // console.log('Relevant Data length:', relevantData[0]?.features.length)
 // console.log('Relevant Data:', relevantData[0]?.features[0])
@@ -162,18 +176,18 @@ console.info('\n\n')
 await sleep(1000)
 
 const SPLIT_RATIO = 0.8
-const TOTAL_DATA_SIZE = relevantData[0]?.features.length!
+const TOTAL_DATA_SIZE = relevantData[0]?.value.length!
 const TRAINING_DATA_SIZE = Math.floor(TOTAL_DATA_SIZE * SPLIT_RATIO)
 const TESTING_DATA_SIZE = TOTAL_DATA_SIZE - TRAINING_DATA_SIZE
 
-const trainingData = relevantData.map(({ id, features }) => {
-  const trainingFeatures = features.slice(0, TRAINING_DATA_SIZE)
-  return { id, features: trainingFeatures } satisfies RelevantData
+const trainingData = relevantData.map(({ id, value }) => {
+  const trainingObservations = value.slice(0, TRAINING_DATA_SIZE)
+  return { id, value: trainingObservations }
 })
 
-const testingData = relevantData.map(({ id, features }) => {
-  const testingFeatures = features.slice(TRAINING_DATA_SIZE, TRAINING_DATA_SIZE + TESTING_DATA_SIZE)
-  return { id, features: testingFeatures } satisfies RelevantData
+const testingData = relevantData.map(({ id, value }) => {
+  const testingObservations = value.slice(TRAINING_DATA_SIZE, TRAINING_DATA_SIZE + TESTING_DATA_SIZE)
+  return { id, value: testingObservations }
 })
 
 console.info('Taille de données totale:', TOTAL_DATA_SIZE)
