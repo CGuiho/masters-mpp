@@ -136,14 +136,19 @@ console.timeEnd('Indicateur Pertiants - Méthode 3')
 const relevantFeatures: Feature[] = relevantFeatures4.slice(0, NUMBER_OF_RELEVANT_FEATURES)
 console.log('Relevant Features:', relevantFeatures)
 
+const relevantFeaturesFile = Bun.file(import.meta.dirname + '/relevant-features.json')
+await relevantFeaturesFile.write(JSON.stringify(relevantFeatures, null, 2))
+
 const expectation = [
   [1, 0, 0, 0], // Mode de fonctionnement 1
   [0, 1, 0, 0], // Mode de fonctionnement 2
   [0, 0, 1, 0], // Mode de fonctionnement 3
   [0, 0, 0, 1], // Mode de fonctionnement 4
 ]
+const expectationLabels: string[] = []
 
 const relevantData: TrainingObservation[][] = featuresData.map(({ id, features }, index) => {
+  expectationLabels.push(id)
   const list: TrainingObservation[] = features.map((featureSet, i) => {
     const value: number[] = []
     for (const feature of relevantFeatures) {
@@ -155,6 +160,9 @@ const relevantData: TrainingObservation[][] = featuresData.map(({ id, features }
   })
   return list
 })
+
+const expectationLabelsFile = Bun.file(import.meta.dirname + '/expectation-labels.json')
+await expectationLabelsFile.write(JSON.stringify(expectationLabels, null, 2))
 
 console.log('Relevant Data length:', relevantData[0]?.length)
 console.log('Relevant Data:', relevantData[0]?.[relevantData[0]?.length - 1])
@@ -196,24 +204,8 @@ console.info(`Entraînement du modèle avec ${trainingData.length} observations,
 const model = trainModel(trainingData, EPOCHS, LEARNING_RATE)
 console.info('✅ Modèle entraîné avec succès.')
 
-console.info('model: ', model)
 const modelFile = Bun.file(import.meta.dirname + '/model.json')
 await modelFile.write(JSON.stringify(model, null, 2))
-
-console.info('\n\n')
-console.info(`🔃 Parametres : Poids et Biais`)
-console.info('\n\n')
-await sleep(1000)
-
-console.info('\n\n')
-console.info(`🔃 Test`)
-console.info('\n\n')
-await sleep(1000)
-
-console.info('\n\n')
-console.info(`🔃 Fin`)
-console.info('\n\n')
-await sleep(1000)
 
 console.info(`
   Vous pouvez desormais appeler le programme 'model-diagnosis.exe' pour diagnostiquer les données.
