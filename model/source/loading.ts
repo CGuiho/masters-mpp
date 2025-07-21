@@ -5,7 +5,6 @@
 import * as fs from 'fs'
 import { calculateFeatureSet, type Feature, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
-import { navigateFromRoot } from './navigate-from-root'
 import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
@@ -51,23 +50,15 @@ console.info(`
  */
 `)
 
-/**
- * Lecture de l'argument de ligne de commande pour le répertoire des données.
- */
-
-const DEFAULT_DATA_DIRECTORY = './data'
-const userDataDirectory = process.argv[2]
-if (!userDataDirectory) {
-  console.warn('😥 No data directory specified. Using default directory:', DEFAULT_DATA_DIRECTORY)
-}
 
 console.info('🔃 Chargement de données dans la mémoire')
 console.info('\n\n')
 await sleep(1000)
 
-console.info('\nUsing data directory:', userDataDirectory || DEFAULT_DATA_DIRECTORY, '\n')
+const rawDataDirectory = import.meta.dirname + '/data'
+const dataDirectory = rawDataDirectory.replace(/\\/g, '/')
+console.info('Data Directory:', dataDirectory)
 
-const dataDirectory = navigateFromRoot(userDataDirectory || DEFAULT_DATA_DIRECTORY)
 const entries = fs.readdirSync(dataDirectory, { withFileTypes: true })
 const subdirectories = entries.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
 
