@@ -111,7 +111,7 @@ console.info('\n\n')
 await sleep(1000)
 
 const classes = featuresData.map(({ features }) => features)
-const featuresList = featuresData.map(({ features }) => features).flat()
+// const featuresList = featuresData.map(({ features }) => features).flat()
 
 const NUMBER_OF_RELEVANT_FEATURES = 4
 
