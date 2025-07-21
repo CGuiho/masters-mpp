@@ -8,7 +8,7 @@
  * The relative path is the file path on workspace or folder.
  */
 
-import { type Model, type Observation, predict, predictWithSoftmax, predictWithSoftmaxAndTemperature } from './model'
+import { type Model, type Observation, predictWithSoftmaxAndTemperature } from './model'
 
 export { }
 export type { }
@@ -20,7 +20,7 @@ export type { }
  * @returns The prediction from the model.
  */
 export function useTrainedModel(trainedModel: Model, observation: Observation): number[] {
-  return predict(trainedModel, observation)
+  return predictWithSoftmaxAndTemperature(trainedModel, observation, 1.0)
 }
 
 // Example of how to use the trained model
@@ -66,32 +66,5 @@ async function main() {
   const standardPrediction = useTrainedModel(trainedModel, newObservation)
   console.log(`Standard Prediction (Sigmoid) for observation ${newObservation.id}:`, standardPrediction)
 
-  // 2. Prediction with Softmax
-  const softmaxPrediction = predictWithSoftmax(trainedModel, newObservation)
-  const sumSoftmax = softmaxPrediction.reduce((a, b) => a + b, 0)
-  console.log(`\nPrediction with Softmax for observation ${newObservation.id}:`, softmaxPrediction)
-  console.log(`(Sum of probabilities: ${sumSoftmax.toFixed(2)})`)
-
-  // 3. Prediction with Softmax and Temperature
-  console.log('\n--- Predictions with Softmax and Temperature ---')
-
-  // Low temperature: makes the model more confident (less random)
-  const lowTemp = 0.5
-  const softmaxLowTemp = predictWithSoftmaxAndTemperature(trainedModel, newObservation, lowTemp)
-  console.log(`\nPrediction with Temperature ${lowTemp}:`, softmaxLowTemp)
-  console.log(`(Sum of probabilities: ${softmaxLowTemp.reduce((a, b) => a + b, 0).toFixed(2)})`)
-
-  // Medium temperature (standard softmax)
-  const medTemp = 1.0
-  const softmaxMedTemp = predictWithSoftmaxAndTemperature(trainedModel, newObservation, medTemp)
-  console.log(`\nPrediction with Temperature ${medTemp}:`, softmaxMedTemp)
-  console.log(`(Sum of probabilities: ${softmaxMedTemp.reduce((a, b) => a + b, 0).toFixed(2)})`)
-
-  // High temperature: makes the model less confident (more random)
-  const highTemp = 2.0
-  const softmaxHighTemp = predictWithSoftmaxAndTemperature(trainedModel, newObservation, highTemp)
-  console.log(`\nPrediction with Temperature ${highTemp}:`, softmaxHighTemp)
-  console.log(`(Sum of probabilities: ${softmaxHighTemp.reduce((a, b) => a + b, 0).toFixed(2)})`)
 }
-
 main()
