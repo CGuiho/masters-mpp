@@ -8,7 +8,7 @@
  * The relative path is the file path on workspace or folder.
  */
 
-export { initializeModel, model, predictWithSoftmax, predictWithSoftmaxAndTemperature }
+export { initializeModel, predict, predictWithSoftmax, predictWithSoftmaxAndTemperature }
 export type { Model, Observation }
 
 /**
@@ -95,7 +95,7 @@ function sigmoid(x: number): number {
  * @param observation The input observation.
  * @returns The output values from the output layer.
  */
-function model(model: Model, observation: Observation): number[] {
+function predict(model: Model, observation: Observation): number[] {
   let inputs = observation.value
 
   for (const layer of model.layers) {
