@@ -8,6 +8,9 @@
  * The relative path is the file path on workspace or folder.
  */
 
+export { initializeModel, model }
+export type { Model, Observation }
+
 /**
  * Represents a single neuron in a layer.
  */
@@ -28,14 +31,14 @@ interface Layer {
 /**
  * Represents the entire neural network model.
  */
-export interface Model {
+interface Model {
   layers: Layer[]
 }
 
 /**
  * Observation data structure for model input.
  */
-export interface Observation {
+interface Observation {
   id: string
   value: number[]
 }
@@ -47,7 +50,7 @@ export interface Observation {
  * @param outputSize The number of output neurons.
  * @returns The initialized model.
  */
-export function initializeModel(inputSize: number, hiddenLayers: number[], outputSize: number): Model {
+function initializeModel(inputSize: number, hiddenLayers: number[], outputSize: number): Model {
   const layers: Layer[] = []
   let prevLayerSize = inputSize
 
@@ -92,7 +95,7 @@ function sigmoid(x: number): number {
  * @param observation The input observation.
  * @returns The output values from the output layer.
  */
-export function model(model: Model, observation: Observation): number[] {
+function model(model: Model, observation: Observation): number[] {
   let inputs = observation.value
 
   for (const layer of model.layers) {
