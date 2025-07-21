@@ -6,7 +6,6 @@ import * as fs from 'fs'
 import { calculateFeatureSet, type Feature, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
 import { navigateFromRoot } from './navigate-from-root'
-import { calculateFeatureRelevanceByVarianceOrdered } from './sbs/feature-relevance-through-variance'
 import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
@@ -61,6 +60,7 @@ if (!userDataDirectory) {
   console.warn('😥 No data directory specified. Using default directory:', DEFAULT_DATA_DIRECTORY)
 }
 
+console.info('🔃 Chargement de données dans la mémoire')
 console.info('\nUsing data directory:', userDataDirectory || DEFAULT_DATA_DIRECTORY, '\n')
 
 const dataDirectory = navigateFromRoot(userDataDirectory || DEFAULT_DATA_DIRECTORY)
@@ -111,31 +111,32 @@ console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 // console.log('Data With Features:', featuresData[0]?.features.length)
 
 console.info('\n\n\n\n')
-
-console.info('\n\n\n\n')
+console.info(`🔃 Calcul des indicateurs pertinents.`)
 
 const classes = featuresData.map(({ features }) => features)
 const featuresList = featuresData.map(({ features }) => features).flat()
 
-console.time('features-variance-0')
-const relevantFeatures2 = sbs(classes)
-console.log('Relevant Features 0:', relevantFeatures2)
-console.timeEnd('features-variance-0')
+const NUMBER_OF_RELEVANT_FEATURES = 4
 
+console.time('Indicateur Pertiants - Méthode 0')
+const relevantFeatures2 = sbs(classes)
+console.info('Indicateur Pertiants - Méthode 0:', relevantFeatures2.slice(0, NUMBER_OF_RELEVANT_FEATURES))
+console.timeEnd('Indicateur Pertiants - Méthode 0')
 // const relevantFeatures1 = calculateFeatureRelevanceByVarianceOrdered(featuresList)
 
-console.time('features-variance-2')
+console.time('Indicateur Pertiants - Méthode 2')
 const relevantFeatures3 = sbs2(classes)
-console.log('Relevant Features 2:', relevantFeatures3)
-console.timeEnd('features-variance-2')
+console.info('Indicateur Pertiants - Méthode 2:', relevantFeatures3.slice(0, NUMBER_OF_RELEVANT_FEATURES))
+console.timeEnd('Indicateur Pertiants - Méthode 2')
 
-console.time('features-variance-3')
+console.time('Indicateur Pertiants - Méthode 3')
 const relevantFeatures4 = sbs3(classes)
-console.log('Relevant Features 3:', relevantFeatures4)
-console.timeEnd('features-variance-3')
+console.info('Indicateur Pertiants - Méthode 3:', relevantFeatures4.slice(0, NUMBER_OF_RELEVANT_FEATURES))
+console.timeEnd('Indicateur Pertiants - Méthode 3')
 
 const relevantFeatures: Feature[] = relevantFeatures4.slice(0, 3)
 console.log('Relevant Features:', relevantFeatures)
+
 
 type RelevantData = {
   id: string
@@ -154,6 +155,9 @@ const relevantData = featuresData.map(({ id, features }) => {
   })
   return { id, features: relevantFeaturesData } satisfies RelevantData
 })
+
+console.info('\n\n\n\n')
+console.info(`🔃 Calcul des indicateurs pertinents.`)
 
 console.log('Relevant Data length:', relevantData[0]?.features.length)
 console.log('Relevant Data:', relevantData[0]?.features[0])
