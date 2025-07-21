@@ -1,0 +1,28 @@
+{
+  "layers": [
+    {
+      "neurons": [
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null }
+      ]
+    },
+    {
+      "neurons": [
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "output": null, "delta": null }
+      ]
+    },
+    {
+      "neurons": [
+        { "weights": [null, null, null, null], "bias": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "delta": null },
+        { "weights": [null, null, null, null], "bias": null, "delta": null }
+      ]
+    }
+  ]
+}

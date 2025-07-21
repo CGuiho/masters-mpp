@@ -197,7 +197,7 @@ const model = trainModel(trainingData, EPOCHS, LEARNING_RATE)
 console.info('✅ Modèle entraîné avec succès.')
 
 console.info('model: ', model)
-const modelFile = Bun.file('model.json')
+const modelFile = Bun.file(import.meta.dirname + '/model.json')
 await modelFile.write(JSON.stringify(model, null, 2))
 
 console.info('\n\n')
