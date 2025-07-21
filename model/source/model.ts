@@ -62,7 +62,7 @@ if (!userDataDirectory) {
 }
 
 console.info('🔃 Chargement de données dans la mémoire')
-console.info('\n🕗\n')
+console.info('\n\n')
 await sleep(1000)
 
 console.info('\nUsing data directory:', userDataDirectory || DEFAULT_DATA_DIRECTORY, '\n')
@@ -116,7 +116,7 @@ console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 
 console.info('\n\n')
 console.info(`🔃 Calcul des indicateurs pertinents.`)
-console.info('\n🕗\n')
+console.info('\n\n')
 await sleep(1000)
 
 const classes = featuresData.map(({ features }) => features)
@@ -167,7 +167,7 @@ const relevantData = featuresData.map(({ id, features }) => {
 
 console.info('\n\n')
 console.info(`🔃 Répartitions de données pour entraînement et test`)
-console.info('\n🕗\n')
+console.info('\n\n')
 await sleep(1000)
 
 const SPLIT_RATIO = 0.8
@@ -194,5 +194,32 @@ console.info('Taille de données de test:', TESTING_DATA_SIZE)
 
 // console.log('Testing Data length:', testingData[0]?.features.length)
 // console.log('Testing Data:', testingData[0]?.features[0])
+
+console.info('\n\n')
+console.info(`🔃 Entraînement`)
+console.info('\n\n')
+await sleep(1000)
+
+console.info('\n\n')
+console.info(`🔃 Parametres : Poids et Biais`)
+console.info('\n\n')
+await sleep(1000)
+
+console.info('\n\n')
+console.info(`🔃 Test`)
+console.info('\n\n')
+await sleep(1000)
+
+console.info('\n\n')
+console.info(`🔃 Fin`)
+console.info('\n\n')
+await sleep(1000)
+
+console.info(`
+  Vous pouvez desormais appeler le programme 'model-diagnosis.exe' pour diagnostiquer les données.
+  Ce modele va prendre en compte :   
+    - Le fichier : 'relevant-features.json' :  les indicateurs pertinents suivants : ${relevantFeatures.join(', ')}.
+    - Le fichier : 'parameters.json' : les paramètres du modèle, les poids et les biais.
+`)
 
 console.timeEnd('Temps Totale : Application')
