@@ -5,7 +5,7 @@
 import * as fs from 'fs'
 import { calculateFeatureSet, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
-import { type Model, type Observation } from './model'
+import { predictWithSoftmax, predictWithSoftmaxAndTemperature, type Model, type Observation } from './model'
 
 const relevantFeaturesFile = Bun.file(import.meta.dirname + '/relevant-features.json')
 const expectationLabelsFile = Bun.file(import.meta.dirname + '/expectation-labels.json')
@@ -74,4 +74,6 @@ const observations: Observation[] = features.map((featureSet, index) => {
 console.info('Observations:', observations)
 
 // Forward pass
-// const outputs = predictWithSoftmaxAndTemperature(trainedModel, observation, 1)
+const outputs = observations.map(observation => predictWithSoftmax(trainedModel, observation))
+
+console.info('Outputs:', outputs)
