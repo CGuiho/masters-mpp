@@ -131,7 +131,7 @@ const relevantFeatures4 = sbs3(classes)
 console.info('Indicateur Pertiants - Méthode 3:', relevantFeatures4.slice(0, NUMBER_OF_RELEVANT_FEATURES))
 console.timeEnd('Indicateur Pertiants - Méthode 3')
 
-const relevantFeatures: Feature[] = relevantFeatures4.slice(0, 3)
+const relevantFeatures: Feature[] = relevantFeatures4.slice(0, NUMBER_OF_RELEVANT_FEATURES)
 console.log('Relevant Features:', relevantFeatures)
 
 
