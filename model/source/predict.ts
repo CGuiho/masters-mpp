@@ -5,7 +5,7 @@
 import * as fs from 'fs'
 import { calculateFeatureSet, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
-import { predictWithSoftmax, predictWithSoftmaxAndTemperature, type Model, type Observation } from './model'
+import { predictWithSoftmax, type Model, type Observation } from './model'
 
 const relevantFeaturesFile = Bun.file(import.meta.dirname + '/relevant-features.json')
 const expectationLabelsFile = Bun.file(import.meta.dirname + '/expectation-labels.json')
