@@ -9,7 +9,7 @@
  */
 
 export { initializeModel, predict, predictWithSoftmax, predictWithSoftmaxAndTemperature }
-export type { Model, Observation }
+export type { Model, Observation, TrainingObservation }
 
 /**
  * Represents a single neuron in a layer.
@@ -41,6 +41,15 @@ interface Model {
 interface Observation {
   id: string
   value: number[]
+}
+
+/**
+ * Data structure for training, including the expected output.
+ */
+interface TrainingObservation {
+  id: string
+  value: number[]
+  expected: number[]
 }
 
 /**

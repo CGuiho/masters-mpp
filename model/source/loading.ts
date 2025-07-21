@@ -5,12 +5,13 @@
 import * as fs from 'fs'
 import { calculateFeatureSet, type Feature, type FeatureSet } from './feature/feature'
 import { loadSignalFromTextBasedFile } from './loader/loader'
+import type { TrainingObservation } from './model'
+import { trainModel } from './model-training'
 import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
 import type { Signal } from './signal/signal'
 import { sleep } from './sleep'
-import type { Observation } from './model'
 
 type DataSource = {
   id: string
@@ -135,40 +136,28 @@ console.timeEnd('Indicateur Pertiants - Méthode 3')
 const relevantFeatures: Feature[] = relevantFeatures4.slice(0, NUMBER_OF_RELEVANT_FEATURES)
 console.log('Relevant Features:', relevantFeatures)
 
+const expectation = [
+  [1, 0, 0, 0], // Mode de fonctionnement 1
+  [0, 1, 0, 0], // Mode de fonctionnement 2
+  [0, 0, 1, 0], // Mode de fonctionnement 3
+  [0, 0, 0, 1], // Mode de fonctionnement 4
+]
 
-type RelevantData = {
-  id: string
-  features: Partial<FeatureSet>[]
-}
-
-const relevantData = featuresData.map(({ id, features }) => {
-  const list = features.map(featureSet => {
+const relevantData: TrainingObservation[][] = featuresData.map(({ id, features }, index) => {
+  const list: TrainingObservation[] = features.map((featureSet, i) => {
     const value: number[] = []
     for (const feature of relevantFeatures) {
       if (featureSet[feature] !== undefined) {
         value.push(featureSet[feature])
       }
     }
-    return { id: 'unset', value } satisfies Observation
+    return { id: `o-${index}-${i}`, value, expected: expectation[index]! } satisfies TrainingObservation
   })
-  return { id, value: list }
+  return list
 })
 
-// const relevantData = featuresData.map(({ id, features }) => {
-//   const relevantFeaturesData = features.map(featureSet => {
-//     const relevantFeatureSet: Partial<FeatureSet> = {}
-//     for (const feature of relevantFeatures) {
-//       if (featureSet[feature] !== undefined) {
-//         relevantFeatureSet[feature] = featureSet[feature]
-//       }
-//     }
-//     return relevantFeatureSet
-//   })
-//   return { id, features: relevantFeaturesData } satisfies RelevantData
-// })
-
-// console.log('Relevant Data length:', relevantData[0]?.features.length)
-// console.log('Relevant Data:', relevantData[0]?.features[0])
+console.log('Relevant Data length:', relevantData[0]?.length)
+console.log('Relevant Data:', relevantData[0]?.[relevantData[0]?.length - 1])
 
 console.info('\n\n')
 console.info(`🔃 Répartitions de données pour entraînement et test`)
@@ -176,34 +165,30 @@ console.info('\n\n')
 await sleep(1000)
 
 const SPLIT_RATIO = 0.8
-const TOTAL_DATA_SIZE = relevantData[0]?.value.length!
+const TOTAL_DATA_SIZE = relevantData[0]?.length!
 const TRAINING_DATA_SIZE = Math.floor(TOTAL_DATA_SIZE * SPLIT_RATIO)
 const TESTING_DATA_SIZE = TOTAL_DATA_SIZE - TRAINING_DATA_SIZE
 
-const trainingData = relevantData.map(({ id, value }) => {
-  const trainingObservations = value.slice(0, TRAINING_DATA_SIZE)
-  return { id, value: trainingObservations }
-})
+const trainingData = relevantData.map(list =>  list.slice(0, TRAINING_DATA_SIZE))
 
-const testingData = relevantData.map(({ id, value }) => {
-  const testingObservations = value.slice(TRAINING_DATA_SIZE, TRAINING_DATA_SIZE + TESTING_DATA_SIZE)
-  return { id, value: testingObservations }
-})
+const testingData = relevantData.map(list => list.slice(TRAINING_DATA_SIZE, TOTAL_DATA_SIZE))
 
 console.info('Taille de données totale:', TOTAL_DATA_SIZE)
 console.info('Taille de données d\'entraînement:', TRAINING_DATA_SIZE)
 console.info('Taille de données de test:', TESTING_DATA_SIZE)
 
-// console.log('Training Data length:', trainingData[0]?.features.length)
-// console.log('Training Data:', trainingData[0]?.features[0])
+console.log('Training Data length:', trainingData[0]?.length)
+console.log('Training Data:', trainingData[0]?.[0])
 
-// console.log('Testing Data length:', testingData[0]?.features.length)
-// console.log('Testing Data:', testingData[0]?.features[0])
+console.log('Testing Data length:', testingData[0]?.length)
+console.log('Testing Data:', testingData[0]?.[0])
 
 console.info('\n\n')
 console.info(`🔃 Entraînement`)
 console.info('\n\n')
 await sleep(1000)
+
+const model = trainModel(trainingData, 1000, 0.01)
 
 console.info('\n\n')
 console.info(`🔃 Parametres : Poids et Biais`)
