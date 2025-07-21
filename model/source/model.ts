@@ -10,6 +10,7 @@ import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
 import type { Signal } from './signal/signal'
+import { sleep } from './sleep'
 
 type DataSource = {
   id: string
@@ -61,6 +62,9 @@ if (!userDataDirectory) {
 }
 
 console.info('🔃 Chargement de données dans la mémoire')
+console.info('\n🕗\n')
+await sleep(1000)
+
 console.info('\nUsing data directory:', userDataDirectory || DEFAULT_DATA_DIRECTORY, '\n')
 
 const dataDirectory = navigateFromRoot(userDataDirectory || DEFAULT_DATA_DIRECTORY)
@@ -112,6 +116,8 @@ console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 
 console.info('\n\n\n\n')
 console.info(`🔃 Calcul des indicateurs pertinents.`)
+console.info('\n🕗\n')
+await sleep(1000)
 
 const classes = featuresData.map(({ features }) => features)
 const featuresList = featuresData.map(({ features }) => features).flat()
@@ -156,11 +162,13 @@ const relevantData = featuresData.map(({ id, features }) => {
   return { id, features: relevantFeaturesData } satisfies RelevantData
 })
 
-console.info('\n\n\n\n')
-console.info(`🔃 Calcul des indicateurs pertinents.`)
+// console.log('Relevant Data length:', relevantData[0]?.features.length)
+// console.log('Relevant Data:', relevantData[0]?.features[0])
 
-console.log('Relevant Data length:', relevantData[0]?.features.length)
-console.log('Relevant Data:', relevantData[0]?.features[0])
+console.info('\n\n\n\n')
+console.info(`🔃 Répartitions de données pour entraînement et test`)
+console.info('\n🕗\n')
+await sleep(1000)
 
 const SPLIT_RATIO = 0.8
 const TOTAL_DATA_SIZE = relevantData[0]?.features.length!
@@ -176,6 +184,10 @@ const testingData = relevantData.map(({ id, features }) => {
   const testingFeatures = features.slice(TRAINING_DATA_SIZE, TRAINING_DATA_SIZE + TESTING_DATA_SIZE)
   return { id, features: testingFeatures } satisfies RelevantData
 })
+
+console.info('Taille de données totale:', TOTAL_DATA_SIZE)
+console.info('Taille de données d\'entraînement:', TRAINING_DATA_SIZE)
+console.info('Taille de données de test:', TESTING_DATA_SIZE)
 
 console.log('Training Data length:', trainingData[0]?.features.length)
 console.log('Training Data:', trainingData[0]?.features[0])
