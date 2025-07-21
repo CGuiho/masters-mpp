@@ -11,7 +11,6 @@ import { sbs } from './sbs/sbs'
 import { sbs2 } from './sbs/sbs2'
 import { sbs3 } from './sbs/sbs3'
 import type { Signal } from './signal/signal'
-import { sleep } from './sleep'
 
 type DataSource = {
   id: string
@@ -55,7 +54,7 @@ console.info(`
 
 console.info('🔃 Chargement de données dans la mémoire')
 console.info('\n\n')
-await sleep(1000)
+// await sleep(1000)
 
 const rawDataDirectory = import.meta.dirname + '/data'
 const dataDirectory = rawDataDirectory.replace(/\\/g, '/')
@@ -110,7 +109,7 @@ console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 console.info('\n\n')
 console.info(`🔃 Calcul des indicateurs pertinents.`)
 console.info('\n\n')
-await sleep(1000)
+// await sleep(1000)
 
 const classes = featuresData.map(({ features }) => features)
 // const featuresList = featuresData.map(({ features }) => features).flat()
@@ -170,7 +169,7 @@ console.log('Relevant Data:', relevantData[0]?.[relevantData[0]?.length - 1])
 console.info('\n\n')
 console.info(`🔃 Répartitions de données pour entraînement et test`)
 console.info('\n\n')
-await sleep(1000)
+// await sleep(1000)
 
 const SPLIT_RATIO = 0.8
 const TOTAL_DATA_SIZE = relevantData[0]?.length!
@@ -194,7 +193,7 @@ console.log('Testing Data:', testingDataMatrix[0]?.[0])
 console.info('\n\n')
 console.info(`🔃 Entraînement`)
 console.info('\n\n')
-await sleep(1000)
+// await sleep(1000)
 
 const trainingData = trainingDataMatrix.flat()
 
@@ -208,10 +207,11 @@ const modelFile = Bun.file(import.meta.dirname + '/model.json')
 await modelFile.write(JSON.stringify(model, null, 2))
 
 console.info(`
-  Vous pouvez desormais appeler le programme 'model-diagnosis.exe' pour diagnostiquer les données.
-  Ce modele va prendre en compte :   
-    - Le fichier : 'relevant-features.json' :  les indicateurs pertinents suivants : ${relevantFeatures.join(', ')}.
-    - Le fichier : 'parameters.json' : les paramètres du modèle, les poids et les biais.
+  Vous pouvez désormais appeler le programme 'model-diagnosis.exe' pour diagnostiquer les données.
+  Ce modele va prendre en compte les fichiers suivants : 
+    - expectation-labels.json  
+    - model.json  
+    - relevant-features.json  -- les indicateurs pertinents suivants : ${relevantFeatures.join(', ')}
 `)
 
 console.timeEnd('Temps Totale : Application')
