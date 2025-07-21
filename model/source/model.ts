@@ -23,7 +23,7 @@ console.info('\nAuthor: Cristóvão GUIHO\n')
 /**
  * Démarrage de la temporisation de l'application.
  */
-console.time('application')
+console.time('Temps Totale : Application')
 console.time('Temps de chargement des données.')
 
 /**
@@ -114,7 +114,7 @@ console.timeEnd('Durée du calcul des indicateurs de chaque signal')
 
 // console.log('Data With Features:', featuresData[0]?.features.length)
 
-console.info('\n\n\n\n')
+console.info('\n\n')
 console.info(`🔃 Calcul des indicateurs pertinents.`)
 console.info('\n🕗\n')
 await sleep(1000)
@@ -165,7 +165,7 @@ const relevantData = featuresData.map(({ id, features }) => {
 // console.log('Relevant Data length:', relevantData[0]?.features.length)
 // console.log('Relevant Data:', relevantData[0]?.features[0])
 
-console.info('\n\n\n\n')
+console.info('\n\n')
 console.info(`🔃 Répartitions de données pour entraînement et test`)
 console.info('\n🕗\n')
 await sleep(1000)
@@ -189,10 +189,10 @@ console.info('Taille de données totale:', TOTAL_DATA_SIZE)
 console.info('Taille de données d\'entraînement:', TRAINING_DATA_SIZE)
 console.info('Taille de données de test:', TESTING_DATA_SIZE)
 
-console.log('Training Data length:', trainingData[0]?.features.length)
-console.log('Training Data:', trainingData[0]?.features[0])
+// console.log('Training Data length:', trainingData[0]?.features.length)
+// console.log('Training Data:', trainingData[0]?.features[0])
 
-console.log('Testing Data length:', testingData[0]?.features.length)
-console.log('Testing Data:', testingData[0]?.features[0])
+// console.log('Testing Data length:', testingData[0]?.features.length)
+// console.log('Testing Data:', testingData[0]?.features[0])
 
-console.timeEnd('application')
+console.timeEnd('Temps Totale : Application')
