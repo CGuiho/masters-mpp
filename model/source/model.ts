@@ -8,7 +8,7 @@
  * The relative path is the file path on workspace or folder.
  */
 
-export { initializeModel, model }
+export { initializeModel, model, predictWithSoftmax, predictWithSoftmaxAndTemperature }
 export type { Model, Observation }
 
 /**
@@ -108,5 +108,96 @@ function model(model: Model, observation: Observation): number[] {
     inputs = newInputs
   }
 
+  return inputs
+}
+
+/**
+ * The softmax activation function.
+ * @param logits The raw output values (activations) from the output layer.
+ * @param temperature A parameter to control the randomness of the prediction.
+ * @returns The softmax probabilities.
+ */
+function softmax(logits: number[], temperature: number = 1.0): number[] {
+  const adjustedLogits = logits.map(logit => logit / temperature)
+  const maxLogit = Math.max(...adjustedLogits)
+  const exps = adjustedLogits.map(logit => Math.exp(logit - maxLogit))
+  const sumExps = exps.reduce((a, b) => a + b)
+  return exps.map(e => e / sumExps)
+}
+
+/**
+ * Performs a forward pass and applies softmax to the output.
+ * @param model The neural network model.
+ * @param observation The input observation.
+ * @returns A probability distribution over the output classes.
+ */
+function predictWithSoftmax(model: Model, observation: Observation): number[] {
+  let inputs = observation.value
+  let rawOutput: number[] = []
+
+  for (let i = 0; i < model.layers.length; i++) {
+    const layer = model.layers[i]
+    const newInputs: number[] = []
+    const isOutputLayer = i === model.layers.length - 1
+
+    if (!layer) throw new Error(`Layer ${i} is undefined in the model.`)
+    for (const neuron of layer.neurons) {
+      const activation = neuron.weights.reduce((acc, weight, j) => acc + weight * inputs[j]!, 0) + neuron.bias
+
+      if (isOutputLayer) {
+        rawOutput.push(activation) // Keep raw activation for softmax
+      } else {
+        neuron.output = sigmoid(activation)
+        newInputs.push(neuron.output)
+      }
+    }
+
+    if (isOutputLayer) {
+      inputs = softmax(rawOutput)
+    } else {
+      inputs = newInputs
+    }
+  }
+  return inputs
+}
+
+/**
+ * Performs a forward pass and applies softmax with temperature to the output.
+ * @param model The neural network model.
+ * @param observation The input observation.
+ * @param temperature Controls the randomness of the prediction. Higher values lead to more random predictions.
+ * @returns A probability distribution over the output classes.
+ */
+
+function predictWithSoftmaxAndTemperature(model: Model, observation: Observation, temperature: number): number[] {
+  if (temperature <= 0) {
+    throw new Error('Temperature must be a positive number.')
+  }
+  let inputs = observation.value
+  let rawOutput: number[] = []
+
+  for (let i = 0; i < model.layers.length; i++) {
+    const layer = model.layers[i]
+    const newInputs: number[] = []
+    const isOutputLayer = i === model.layers.length - 1
+
+    if (!layer) throw new Error(`Layer ${i} is undefined in the model.`)
+
+    for (const neuron of layer.neurons) {
+      const activation = neuron.weights.reduce((acc, weight, j) => acc + weight * inputs[j]!, 0) + neuron.bias
+
+      if (isOutputLayer) {
+        rawOutput.push(activation)
+      } else {
+        neuron.output = sigmoid(activation)
+        newInputs.push(neuron.output)
+      }
+    }
+    if (isOutputLayer) {
+      inputs = softmax(rawOutput, temperature)
+    } else {
+      inputs = newInputs
+    }
+  }
   return inputs
 }
