@@ -8,7 +8,7 @@
  * The relative path is the file path on workspace or folder.
  */
 
-import { type Model, type Observation, initializeModel, model as predict } from './model'
+import { type Model, type Observation, initializeModel, predictWithSoftmaxAndTemperature } from './model'
 import { HIDDEN_LAYER_SIZES, OUTPUT_SIZE } from './model-constant'
 
 export { trainModel }
@@ -42,7 +42,7 @@ function trainModel(trainingData: Observation[], epochs: number, learningRate: n
   for (let epoch = 0; epoch < epochs; epoch++) {
     for (const observation of trainingData) {
       // Forward pass
-      const outputs = predict(trainedModel, observation)
+      const outputs = predictWithSoftmaxAndTemperature(trainedModel, observation, 1.0)
       const expected = observation.value // Assuming the target is the same as the input for this example
 
       if (expected.length !== outputSize) {
