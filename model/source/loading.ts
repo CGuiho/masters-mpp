@@ -169,26 +169,36 @@ const TOTAL_DATA_SIZE = relevantData[0]?.length!
 const TRAINING_DATA_SIZE = Math.floor(TOTAL_DATA_SIZE * SPLIT_RATIO)
 const TESTING_DATA_SIZE = TOTAL_DATA_SIZE - TRAINING_DATA_SIZE
 
-const trainingData = relevantData.map(list =>  list.slice(0, TRAINING_DATA_SIZE))
+const trainingDataMatrix = relevantData.map(list =>  list.slice(0, TRAINING_DATA_SIZE))
 
-const testingData = relevantData.map(list => list.slice(TRAINING_DATA_SIZE, TOTAL_DATA_SIZE))
+const testingDataMatrix = relevantData.map(list => list.slice(TRAINING_DATA_SIZE, TOTAL_DATA_SIZE))
 
 console.info('Taille de données totale:', TOTAL_DATA_SIZE)
 console.info('Taille de données d\'entraînement:', TRAINING_DATA_SIZE)
 console.info('Taille de données de test:', TESTING_DATA_SIZE)
 
-console.log('Training Data length:', trainingData[0]?.length)
-console.log('Training Data:', trainingData[0]?.[0])
+console.log('Training Data length:', trainingDataMatrix[0]?.length)
+console.log('Training Data:', trainingDataMatrix[0]?.[0])
 
-console.log('Testing Data length:', testingData[0]?.length)
-console.log('Testing Data:', testingData[0]?.[0])
+console.log('Testing Data length:', testingDataMatrix[0]?.length)
+console.log('Testing Data:', testingDataMatrix[0]?.[0])
 
 console.info('\n\n')
 console.info(`🔃 Entraînement`)
 console.info('\n\n')
 await sleep(1000)
 
-const model = trainModel(trainingData, 1000, 0.01)
+const trainingData = trainingDataMatrix.flat()
+
+const EPOCHS = 1000
+const LEARNING_RATE = 0.01
+console.info(`Entraînement du modèle avec ${trainingData.length} observations, ${EPOCHS} epochs et un taux d'apprentissage de ${LEARNING_RATE}.`)
+const model = trainModel(trainingData, EPOCHS, LEARNING_RATE)
+console.info('✅ Modèle entraîné avec succès.')
+
+console.info('model: ', model)
+const modelFile = Bun.file('model.json')
+await modelFile.write(JSON.stringify(model, null, 2))
 
 console.info('\n\n')
 console.info(`🔃 Parametres : Poids et Biais`)
