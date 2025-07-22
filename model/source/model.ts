@@ -162,6 +162,7 @@ function predictWithSoftmax(model: Model, observation: Observation): number[] {
     }
 
     if (isOutputLayer) {
+      console.log('Raw Output:', rawOutput)
       inputs = softmax(rawOutput)
     } else {
       inputs = newInputs
