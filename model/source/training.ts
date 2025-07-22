@@ -197,7 +197,7 @@ console.info('\n\n')
 
 const trainingData = trainingDataMatrix.flat()
 
-const EPOCHS = 1000
+const EPOCHS = 100_000
 const LEARNING_RATE = 0.01
 console.info(`Entraînement du modèle avec ${trainingData.length} observations, ${EPOCHS} epochs et un taux d'apprentissage de ${LEARNING_RATE}.`)
 const model = trainModel(trainingData, EPOCHS, LEARNING_RATE)
