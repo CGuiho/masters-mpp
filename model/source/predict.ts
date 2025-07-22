@@ -76,4 +76,9 @@ console.info('Observations:', observations)
 // Forward pass
 const outputs = observations.map(observation => predictWithSoftmax(trainedModel, observation))
 
+const maxIndex = outputs.map(output => output.indexOf(Math.max(...output)))
+const maxLabels = maxIndex.map(index => expectationLabels[index])
+
 console.info('Outputs:', outputs)
+console.info('Max Indices:', maxIndex)
+console.info('Max Labels:', maxLabels)
